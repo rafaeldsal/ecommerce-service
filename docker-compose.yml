@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  image: mysql:8.0
+  container_name: mysql_container
+  restart: always
+  environment:
+    MYSQL_ROOT_PASSWORD: rootuser
+    MYSQL_DATABASE: minha_prata
+    MYSQL_USER: root
+    MYSQL_PASSWORD: rootuser
+  ports:
+    - "3306":"3306"
+  volumes:
+    - mysql_data:/var/lib/mysql
+  networks:
+    - rede_minha_prata
+
+volumes:
+  mysql_data
+
+networks:
+  rede_minha_prata

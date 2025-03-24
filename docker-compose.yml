@@ -1,23 +1,26 @@
-version: '3.8'
-
 services:
-  image: mysql:8.0
-  container_name: mysql_container
-  restart: always
-  environment:
-    MYSQL_ROOT_PASSWORD: rootuser
-    MYSQL_DATABASE: minha_prata
-    MYSQL_USER: root
-    MYSQL_PASSWORD: rootuser
-  ports:
-    - "3306":"3306"
-  volumes:
-    - mysql_data:/var/lib/mysql
-  networks:
-    - rede_minha_prata
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - rede_minha_prata
+    env_file:
+      - .env
 
 volumes:
-  mysql_data
+  mysql_data:
 
 networks:
-  rede_minha_prata
+  rede_minha_prata:
+    driver: bridge

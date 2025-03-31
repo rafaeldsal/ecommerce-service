@@ -1,29 +1,45 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
-import jakarta.persistence.*;
-
 import java.math.BigDecimal;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
-@Table(name = "tbl_order_item")
+@Table(name = "order_item")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OrderItem {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(unique = true, nullable = false, updatable = false)
   private Integer id;
 
   @Column(nullable = false)
   private Integer quantity;
 
-  @Column(nullable = false)
+  @Column(name = "price_at_purchase", nullable = false)
   private BigDecimal priceAtPurchase;
 
-  @ManyToOne
-  @JoinColumn(name = "order_id")
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "orders_id")
   private Order order;
 
-  @ManyToOne
-  @JoinColumn(name = "product_id")
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "products_id")
   private Product product;
 }

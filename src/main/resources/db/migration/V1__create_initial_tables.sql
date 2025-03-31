@@ -4,15 +4,15 @@ CREATE TABLE IF NOT EXISTS `users` (
     `email` VARCHAR(255) NOT NULL,
     `cpf` CHAR(255) NOT NULL,
     `phone_number` VARCHAR(255) NOT NULL,
-    `dt_birth` DATETIME NOT NULL,
+    `dt_birth` DATE NOT NULL,
     `role` VARCHAR(255) NOT NULL,
-    `dt_created` DATETIME NULL,
-    `dt_updated` DATETIME NULL
+    `dt_created` DATE NULL,
+    `dt_updated` DATE NULL
 );
 
 CREATE TABLE IF NOT EXISTS `orders` (
     `orders_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `dt_order` DATETIME NOT NULL,
+    `dt_order` DATE NOT NULL,
     `status` VARCHAR(255) NULL,
     `users_id` INT NOT NULL
 );
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
 
 CREATE TABLE IF NOT EXISTS `payments` (
     `payments_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `dt_payment` DATETIME NOT NULL,
+    `dt_payment` DATE NOT NULL,
     `payment_method` VARCHAR(90) NOT NULL,
     `amount` DECIMAL(15,2) NOT NULL,
     `orders_id` INT NOT NULL
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `user_payment_info` (
     `card_security_code` CHAR(255) NOT NULL,
     `price` DECIMAL(15,2) NOT NULL,
     `instalments` INT NOT NULL,
-    `dt_payment` DATETIME NOT NULL,
+    `dt_payment` DATE NOT NULL,
     `users_id` INT
 );
 
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `order_history` (
     `history_id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `order_id` INT NOT NULL,
     `status` VARCHAR(255) NOT NULL,
-    `dt_event` DATETIME,
+    `dt_event` DATE,
     `users_id` INT NULL,
     `note` TEXT NULL
 );

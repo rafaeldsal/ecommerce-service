@@ -1,17 +1,30 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
-import jakarta.persistence.*;
-import lombok.Data;
-
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
-@Table(name = "tbl_users")
+@Table(name = "users")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class User {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(unique = true, nullable = false, updatable = false)
   private Integer id;
 
@@ -21,21 +34,21 @@ public class User {
   @Column(nullable = false, unique = true, updatable = false)
   private String email;
 
-  @Column(nullable = false)
-  private String password;
+  @Column(nullable = false, unique = true, updatable = false)
+  private String cpf;
 
   @Column(name = "phone_number", nullable = false)
   private String phoneNumber;
 
-  @Column(name = "birth_date", nullable = false)
-  private LocalDate birthDate;
+  @Column(name = "dt_birth", nullable = false)
+  private LocalDate dtBirth;
 
   @Enumerated(EnumType.STRING)
   private UserRole role;
 
-  @Column(updatable = false)
-  private LocalDate createdAt = LocalDate.now();
+  @Column(name = "dt_created", updatable = false)
+  private LocalDate dtCreated = LocalDate.now();
 
-  @Column(updatable = false)
-  private LocalDate updatedAt;
+  @Column(name = "dt_updated", updatable = false)
+  private LocalDate dtUpdated;
 }

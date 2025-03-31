@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "order_history")
+@Table(name = "tbl_order_history")
 public class OrderHistory implements Serializable {
 
   @Id

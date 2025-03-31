@@ -17,17 +17,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "products")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
+@Table(name = "tbl_product")
 public class Product implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(nullable = false, unique = true, updatable = false)
+  @Column(name = "product_id", nullable = false, unique = true, updatable = false)
   private Long id;
 
   @Column(nullable = false)
@@ -42,7 +42,7 @@ public class Product implements Serializable {
   private String imgUrl;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "categories_id")
+  @JoinColumn(name = "category_id")
   private Category category;
 
 }

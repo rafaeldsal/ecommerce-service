@@ -22,17 +22,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "orders")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
+@Table(name = "tbl_order")
 public class Order implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "orders_id", unique = true, nullable = false, updatable = false)
+  @Column(name = "order_id", unique = true, nullable = false, updatable = false)
   private Long id;
 
   @Column(name = "dt_order", nullable = false)
@@ -42,7 +42,7 @@ public class Order implements Serializable {
   private OrderStatus status;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "users_id", nullable = false)
+  @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
   @OneToMany(mappedBy = "order")

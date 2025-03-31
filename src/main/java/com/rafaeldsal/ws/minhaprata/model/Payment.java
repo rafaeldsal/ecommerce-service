@@ -19,7 +19,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "payments")
+@Table(name = "tbl_payment")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,7 +28,7 @@ public class Payment implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "payments_id", unique = true, nullable = false, updatable = false)
+  @Column(name = "payment_id", unique = true, nullable = false, updatable = false)
   private Long id;
 
   @Column(name = "dt_payment", nullable = false)
@@ -41,7 +41,7 @@ public class Payment implements Serializable {
   private BigDecimal amount;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "orders_id")
+  @JoinColumn(name = "order_id")
   private Order order;
 
 }

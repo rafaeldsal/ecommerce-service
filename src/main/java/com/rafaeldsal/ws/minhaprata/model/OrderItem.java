@@ -18,7 +18,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "order_item")
+@Table(name = "tbl_order_item")
 @Data
 @Builder
 @NoArgsConstructor
@@ -37,10 +37,10 @@ public class OrderItem implements Serializable {
   private BigDecimal priceAtPurchase;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "orders_id")
+  @JoinColumn(name = "order_id")
   private Order order;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "products_id")
+  @JoinColumn(name = "product_id")
   private Product product;
 }

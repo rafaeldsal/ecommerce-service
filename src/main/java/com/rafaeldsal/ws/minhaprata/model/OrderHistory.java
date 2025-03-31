@@ -1,25 +1,37 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "order_history")
-public class OrderHistory {
+public class OrderHistory implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(name = "history_id")
-  private Integer id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "history_id", unique = true, nullable = false, updatable = false)
+  private Long id;
 
+  @Enumerated(EnumType.STRING)
   private OrderStatus status;
 
   @Column(name = "dt_event")

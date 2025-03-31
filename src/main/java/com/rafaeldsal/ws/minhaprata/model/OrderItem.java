@@ -1,5 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
@@ -22,12 +23,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderItem {
+public class OrderItem implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(unique = true, nullable = false, updatable = false)
-  private Integer id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "order_item_id", unique = true, nullable = false, updatable = false)
+  private Long id;
 
   @Column(nullable = false)
   private Integer quantity;

@@ -1,5 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,12 +28,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Order {
+public class Order implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @Column(unique = true, nullable = false, updatable = false)
-  private Integer id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "orders_id", unique = true, nullable = false, updatable = false)
+  private Long id;
 
   @Column(name = "dt_order", nullable = false)
   private LocalDate dtOrder = LocalDate.now();

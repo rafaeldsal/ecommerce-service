@@ -1,5 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -18,16 +19,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "tbl_payment")
+@Table(name = "payments")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Payment {
+public class Payment implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "payments_id", unique = true, nullable = false, updatable = false)
+  private Long id;
 
   @Column(name = "dt_payment", nullable = false)
   private LocalDate dtPayment;

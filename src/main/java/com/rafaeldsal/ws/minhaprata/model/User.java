@@ -1,5 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
@@ -21,12 +22,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+public class User implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(unique = true, nullable = false, updatable = false)
-  private Integer id;
+  private Long id;
 
   @Column(nullable = false)
   private String name;

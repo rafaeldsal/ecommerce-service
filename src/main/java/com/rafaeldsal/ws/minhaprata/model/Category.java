@@ -1,5 +1,8 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
+import java.io.Serializable;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,11 +19,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Category {
+public class Category implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Integer id;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "categories_id", unique = true, nullable = false, updatable = false)
+  private Long id;
 
   private String name;
 

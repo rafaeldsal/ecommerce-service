@@ -1,4 +1,4 @@
-package com.rafaeldsal.minha.prata.minha_prata;
+package com.rafaeldsal.ws.minhaprata;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,4 +1,4 @@
-package com.rafaeldsal.minha.prata.minha_prata.entity;
+package com.rafaeldsal.ws.minhaprata.model;
 
 import jakarta.persistence.*;
 

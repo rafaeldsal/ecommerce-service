@@ -38,6 +38,9 @@ public class Order implements Serializable {
   @Column(name = "dt_order", nullable = false)
   private LocalDate dtOrder = LocalDate.now();
 
+  @Column(name = "dt_updated", nullable = false)
+  private LocalDate dtUpdated = LocalDate.now();
+
   @Enumerated(EnumType.STRING)
   private OrderStatus status;
 

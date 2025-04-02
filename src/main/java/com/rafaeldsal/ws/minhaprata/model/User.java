@@ -2,6 +2,7 @@ package com.rafaeldsal.ws.minhaprata.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,6 +11,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +28,7 @@ public class User implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(unique = true, nullable = false, updatable = false)
+  @Column(name = "user_id", unique = true, nullable = false, updatable = false)
   private Long id;
 
   @Column(nullable = false)
@@ -38,18 +40,25 @@ public class User implements Serializable {
   @Column(nullable = false, unique = true, updatable = false)
   private String cpf;
 
-  @Column(name = "phone_number", nullable = false)
+  @Column(name = "phone_number", nullable = false, unique = true)
   private String phoneNumber;
 
   @Column(name = "dt_birth", nullable = false)
   private LocalDate dtBirth;
 
   @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
   private UserRole role;
 
-  @Column(name = "dt_created", updatable = false)
+  @Column(name = "dt_created", updatable = false, nullable = false)
   private LocalDate dtCreated = LocalDate.now();
 
-  @Column(name = "dt_updated", updatable = false)
+  @Column(name = "dt_updated", updatable = false, nullable = false)
   private LocalDate dtUpdated;
+
+  @OneToMany(mappedBy = "user")
+  private List<Order> orders;
+
+  @OneToMany(mappedBy = "user")
+  private List<OrderHistory> orderHistories;
 }

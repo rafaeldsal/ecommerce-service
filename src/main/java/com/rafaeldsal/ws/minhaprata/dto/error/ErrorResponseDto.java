@@ -6,9 +6,7 @@ import lombok.Builder;
 
 @Builder
 public record ErrorResponseDto(
-  String message,
-  HttpStatus status,
-  Integer statusCode
-) {
-  
+    String message,
+    HttpStatus status,
+    Integer statusCode) {
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.rafaeldsal.ws.minhaprata.dto.CategoryDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
+import com.rafaeldsal.ws.minhaprata.mapper.CategoryMapper;
 import com.rafaeldsal.ws.minhaprata.model.Category;
 import com.rafaeldsal.ws.minhaprata.repository.CategoryRepository;
 import com.rafaeldsal.ws.minhaprata.service.CategoryService;
@@ -35,26 +36,18 @@ public class CategoryServiceImpl implements CategoryService {
   @Override
   public Category create(CategoryDto category) {
 
-    if (Objects.nonNull(category.id())) {
+    if (Objects.nonNull(category.getId())) {
       throw new BadRequestException("Id deve ser nulo");
     }
 
-    return categoryRepository.save(Category.builder()
-        .id(category.id())
-        .name(category.name())
-        .description(category.description())
-        .build());
+    return categoryRepository.save(CategoryMapper.fromDtoTCategory(category));
   }
 
   @Override
   public Category update(Long id, CategoryDto category) {
     getCategory(id);
-
-    return categoryRepository.save(Category.builder()
-        .id(id)
-        .name(category.name())
-        .description(category.description())
-        .build());
+    category.setId(id);
+    return categoryRepository.save(CategoryMapper.fromDtoTCategory(category));
   }
 
   @Override

@@ -2,6 +2,7 @@ package com.rafaeldsal.ws.minhaprata.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -54,11 +55,11 @@ public class User implements Serializable {
   private LocalDate dtCreated = LocalDate.now();
 
   @Column(name = "dt_updated", updatable = false, nullable = false)
-  private LocalDate dtUpdated;
+  private LocalDate dtUpdated = LocalDate.now();
 
   @OneToMany(mappedBy = "user")
-  private List<Order> orders;
+  private List<Order> orders = new ArrayList<>();
 
   @OneToMany(mappedBy = "user")
-  private List<OrderHistory> orderHistories;
+  private List<OrderHistory> orderHistories = new ArrayList<>();
 }

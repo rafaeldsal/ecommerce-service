@@ -1,5 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.exception.handler;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -18,6 +19,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class ResourceHandler {
 
+  @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorResponseDto> handlerMethodArgumentNotValidException(MethodArgumentNotValidException m) {
 
     Map<String, String> messages = new HashMap<>();
@@ -48,6 +50,15 @@ public class ResourceHandler {
   public ResponseEntity<ErrorResponseDto> handlerBadRequestException(BadRequestException b) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponseDto.builder()
         .message(b.getMessage())
+        .status(HttpStatus.BAD_REQUEST)
+        .statusCode(HttpStatus.BAD_REQUEST.value())
+        .build());
+  }
+
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  public ResponseEntity<ErrorResponseDto> dataIntegrityViolationException(DataIntegrityViolationException d) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponseDto.builder()
+        .message(d.getMessage())
         .status(HttpStatus.BAD_REQUEST)
         .statusCode(HttpStatus.BAD_REQUEST.value())
         .build());

@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
   @Override
   public Category create(CategoryDto category) {
 
-    if (Objects.nonNull(category.getId())) {
+    if (Objects.nonNull(category.id())) {
       throw new BadRequestException("Id deve ser nulo");
     }
 
@@ -45,9 +45,9 @@ public class CategoryServiceImpl implements CategoryService {
 
   @Override
   public Category update(Long id, CategoryDto category) {
-    getCategory(id);
-    category.setId(id);
-    return categoryRepository.save(CategoryMapper.fromDtoTCategory(category));
+    var categoryExisting = getCategory(id);
+    CategoryMapper.updateEntityFromDto(category, categoryExisting);
+    return categoryRepository.save(categoryExisting);
   }
 
   @Override

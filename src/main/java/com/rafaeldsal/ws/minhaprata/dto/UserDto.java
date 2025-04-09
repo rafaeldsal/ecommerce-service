@@ -5,43 +5,35 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class UserDto {
+public record UserDto(
+    Long id,
 
-  private Long id;
+    @NotBlank(message = "não poder ser nulo ou vazio")
+    @Size(min = 3, message = "valor mínimo igual a 3")
+    String name,
 
-  @NotBlank(message = "não poder ser nulo ou vazio")
-  @Size(min = 3, message = "valor mínimo igual a 3")
-  private String name;
+    @Email(message = "inválido")
+    String email,
 
-  @Email(message = "inválido")
-  private String email;
+    @CPF(message = "inválido")
+    String cpf,
 
-  @CPF(message = "inválido")
-  private String cpf;
+    @NotBlank(message = "não pode ser nulo ou vazio")
+    @Size(min = 11, message = "valor mínimo igual a 11")
+    String phoneNumber,
 
-  @NotBlank(message = "não pode ser nulo ou vazio")
-  @Size(min = 11, message = "valor mínimo igual a 11")
-  private String phoneNumber;
+    @Past(message = "data deve estar no passado")
+    LocalDate dtBirth,
 
-  @Past(message = "data deve estar no passado")
-  private LocalDate dtBirth;
+    UserRole role,
 
-  private UserRole role = UserRole.USER;
+    LocalDate dtCreated,
 
-  private LocalDate dtCreated = LocalDate.now();
-
-  private LocalDate dtUpdated = LocalDate.now();
+    LocalDate dtUpdated
+) {
 
 }

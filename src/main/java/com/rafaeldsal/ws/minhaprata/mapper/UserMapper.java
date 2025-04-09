@@ -3,23 +3,37 @@ package com.rafaeldsal.ws.minhaprata.mapper;
 import com.rafaeldsal.ws.minhaprata.dto.UserDto;
 import com.rafaeldsal.ws.minhaprata.dto.UserResponseDto;
 import com.rafaeldsal.ws.minhaprata.model.User;
+import com.rafaeldsal.ws.minhaprata.model.UserRole;
 
 import java.time.LocalDate;
 
 public class UserMapper {
 
   public static User fromDtoToEntity(UserDto dto) {
+
+    if (dto == null) return null;
+
     return User.builder()
-        .id(dto.getId())
-        .name(dto.getName())
-        .email(dto.getEmail())
-        .cpf(dto.getCpf())
-        .phoneNumber(dto.getPhoneNumber())
-        .dtBirth(dto.getDtBirth())
-        .dtCreated(dto.getDtCreated() != null ? dto.getDtCreated() : LocalDate.now())
-        .dtUpdated(dto.getDtUpdated() != null ? dto.getDtUpdated() : LocalDate.now())
-        .role(dto.getRole())
+        .id(dto.id())
+        .name(dto.name())
+        .email(dto.email())
+        .cpf(dto.cpf())
+        .phoneNumber(dto.phoneNumber())
+        .dtBirth(dto.dtBirth())
+        .dtCreated(dto.dtCreated() != null ? dto.dtCreated() : LocalDate.now())
+        .dtUpdated(dto.dtUpdated() != null ? dto.dtUpdated() : LocalDate.now())
+        .role(dto.role() != null ? dto.role() : UserRole.USER)
         .build();
+  }
+
+  public static void updateEntityFromDto(UserDto dto, User user) {
+    if (dto == null || user == null) return;
+
+    user.setName(dto.name() != null ? dto.name() : user.getName());
+    user.setEmail(dto.email() != null ? dto.email() : user.getEmail());
+    user.setPhoneNumber(dto.phoneNumber() != null ? dto.phoneNumber() : user.getPhoneNumber());
+    user.setDtBirth(dto.dtBirth() != null ? dto.dtBirth() : user.getDtBirth());
+    user.setDtUpdated(LocalDate.now());
   }
 
   public static UserResponseDto fromEntityToResponseDto(User user) {

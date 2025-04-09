@@ -1,10 +1,5 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,12 +11,19 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_user")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -35,7 +37,7 @@ public class User implements Serializable {
   @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false, unique = true, updatable = false)
+  @Column(nullable = false, unique = true)
   private String email;
 
   @Column(nullable = false, unique = true, updatable = false)
@@ -54,7 +56,7 @@ public class User implements Serializable {
   @Column(name = "dt_created", updatable = false, nullable = false)
   private LocalDate dtCreated = LocalDate.now();
 
-  @Column(name = "dt_updated", updatable = false, nullable = false)
+  @Column(name = "dt_updated", nullable = false)
   private LocalDate dtUpdated = LocalDate.now();
 
   @OneToMany(mappedBy = "user")

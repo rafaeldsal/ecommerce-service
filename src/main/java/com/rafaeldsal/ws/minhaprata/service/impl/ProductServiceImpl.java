@@ -1,6 +1,7 @@
 package com.rafaeldsal.ws.minhaprata.service.impl;
 
 import com.rafaeldsal.ws.minhaprata.dto.ProductDto;
+import com.rafaeldsal.ws.minhaprata.dto.ProductResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.mapper.ProductMapper;
@@ -25,23 +26,25 @@ public class ProductServiceImpl implements ProductService {
   private CategoryRepository categoryRepository;
 
   @Override
-  public List<Product> findAll() {
-    return productRepository.findAll();
+  public List<ProductResponseDto> findAll() {
+    return productRepository.findAll().stream()
+        .map(ProductMapper::fromEntityToResponseDto)
+        .toList();
   }
 
   @Override
-  public Product findById(Long id) {
-    return getProduct(id);
+  public ProductResponseDto findById(Long id) {
+    return ProductMapper.fromEntityToResponseDto(getProduct(id));
   }
 
   @Override
   public Product create(ProductDto dto) {
 
-    if (Objects.nonNull(dto.getId())) {
+    if (Objects.nonNull(dto.id())) {
       throw new BadRequestException("productId não pode ser informado");
     }
 
-    var categoryTypeOpt = getCategory(dto.getCategoryId());
+    var categoryTypeOpt = getCategory(dto.categoryId());
 
     var product = ProductMapper.fromDtoToEntity(dto, categoryTypeOpt);
 
@@ -49,12 +52,23 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public Product update(Long id, ProductDto product) {
+  public ProductResponseDto update(Long id, ProductDto product) {
 
     var productExisting = getProduct(id);
-    product.setId(productExisting.getId());
+    Category category = null;
 
-    return productRepository.save(ProductMapper.fromDtoToEntity(product, productExisting.getCategory()));
+    if (product.categoryId() != null) {
+      category = categoryRepository.findById(product.categoryId())
+          .orElseThrow(() -> new NotFoundException("Categoria não encontrada"));
+    }
+
+    System.out.println("DTO Img url: " + product.imgUrl());
+    System.out.println("Entity Img url: " + productExisting.getImgUrl());
+
+    ProductMapper.updateEntityFromDto(product, productExisting, category);
+    productRepository.save(productExisting);
+
+    return ProductMapper.fromEntityToResponseDto(productExisting);
   }
 
   @Override

@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `tbl_product` (
     `name` VARCHAR(255) NOT NULL,
     `description` VARCHAR(255) NOT NULL,
     `price` DECIMAL(15,2) NOT NULL,
-    `imgUrl` VARCHAR(255) NULL,
+    `img_url` VARCHAR(255) NULL,
     `dt_created` DATE NOT NULL,
     `dt_updated` DATE NOT NULL,
     `category_id` INT NOT NULL

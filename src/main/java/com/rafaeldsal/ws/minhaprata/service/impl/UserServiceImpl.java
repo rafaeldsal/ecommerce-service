@@ -8,6 +8,7 @@ import com.rafaeldsal.ws.minhaprata.mapper.UserMapper;
 import com.rafaeldsal.ws.minhaprata.model.User;
 import com.rafaeldsal.ws.minhaprata.repository.UserRepository;
 import com.rafaeldsal.ws.minhaprata.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,13 +36,13 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserResponseDto create(UserDto dto) {
-    if (Objects.nonNull(dto.getId())) {
+    if (Objects.nonNull(dto.id())) {
       throw new BadRequestException("userId não pode ser definido");
     }
 
-    if (userRepository.existsByCpf(dto.getCpf()) ||
-        userRepository.existsByEmail(dto.getEmail()) ||
-        userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
+    if (userRepository.existsByCpf(dto.cpf()) ||
+        userRepository.existsByEmail(dto.email()) ||
+        userRepository.existsByPhoneNumber(dto.phoneNumber())) {
       throw new BadRequestException("CPF, e-mail ou telefone já cadastrado");
     }
 
@@ -51,28 +52,36 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Transactional
   public UserResponseDto update(Long id, UserDto dto) {
     User existingUser = getUser(id);
 
-    if (!existingUser.getCpf().equals(dto.getCpf())) {
+    if (!existingUser.getCpf().equals(dto.cpf())) {
       throw new BadRequestException("CPF não pode ser alterado");
     }
 
-    if (dto.getEmail() != null &&
-        !dto.getEmail().equals(existingUser.getEmail()) &&
-        userRepository.existsByEmail(dto.getEmail())) {
+    if (dto.email() != null &&
+        !dto.email().equals(existingUser.getEmail()) &&
+        userRepository.existsByEmailAndIdNot(dto.email(), id)) {
       throw new BadRequestException("E-mail já cadastrado");
     }
 
-    if (dto.getPhoneNumber() != null &&
-        !dto.getPhoneNumber().equals(existingUser.getPhoneNumber()) &&
-        userRepository.existsByPhoneNumber(dto.getPhoneNumber())) {
+    if (dto.phoneNumber() != null &&
+        !dto.phoneNumber().equals(existingUser.getPhoneNumber()) &&
+        userRepository.existsByPhoneNumberAndIdNot(dto.phoneNumber(), id)) {
       throw new BadRequestException("Telefone já cadastrado");
     }
 
-    User user = UserMapper.fromDtoToEntity(dto);
-    userRepository.save(user);
-    return UserMapper.fromEntityToResponseDto(user);
+    System.out.println("DTO data: " + dto.dtUpdated());
+    System.out.println("User data: " + existingUser.getDtUpdated());
+
+    System.out.println("DTO email: " + dto.email());
+    System.out.println("User email: " + existingUser.getEmail());
+
+    UserMapper.updateEntityFromDto(dto, existingUser);
+    userRepository.save(existingUser);
+
+    return UserMapper.fromEntityToResponseDto(existingUser);
   }
 
   @Override

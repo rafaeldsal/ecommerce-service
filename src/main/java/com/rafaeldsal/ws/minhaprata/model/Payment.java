@@ -1,9 +1,5 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,12 +11,18 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 @Table(name = "tbl_payment")
-@Data
+@Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

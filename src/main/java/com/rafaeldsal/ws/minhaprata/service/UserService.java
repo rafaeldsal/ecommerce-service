@@ -2,12 +2,11 @@ package com.rafaeldsal.ws.minhaprata.service;
 
 import com.rafaeldsal.ws.minhaprata.dto.UserDto;
 import com.rafaeldsal.ws.minhaprata.dto.UserResponseDto;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface UserService {
 
-  List<UserResponseDto> findAll();
+  Page<UserResponseDto> findAll(Integer page, Integer size, String sort, String name);
 
   UserResponseDto findByID(Long id);
 

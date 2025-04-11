@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record UserDto(
     Long id,
@@ -31,9 +32,9 @@ public record UserDto(
 
     UserRole role,
 
-    LocalDate dtCreated,
+    LocalDateTime dtCreated,
 
-    LocalDate dtUpdated
+    LocalDateTime dtUpdated
 ) {
 
 }

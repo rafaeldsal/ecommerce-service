@@ -3,6 +3,7 @@ package com.rafaeldsal.ws.minhaprata.dto;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 public record UserResponseDto(
@@ -12,7 +13,7 @@ public record UserResponseDto(
     String cpf,
     String phoneNumber,
     LocalDate dtBirth,
-    LocalDate dtCreated,
-    LocalDate dtUpdated
+    LocalDateTime dtCreated,
+    LocalDateTime dtUpdated
 ) {
 }

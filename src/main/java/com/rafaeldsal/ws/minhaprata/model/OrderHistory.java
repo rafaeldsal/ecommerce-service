@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -39,10 +39,10 @@ public class OrderHistory implements Serializable {
   private OrderStatus status;
 
   @Column(name = "dt_event", nullable = false)
-  private LocalDate dtEvent;
+  private LocalDateTime dtEvent;
 
   @Column(name = "dt_created", nullable = false)
-  private LocalDate dtCreated = LocalDate.now();
+  private LocalDateTime dtCreated = LocalDateTime.now();
 
   private String note;
 

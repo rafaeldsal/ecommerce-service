@@ -1,12 +1,23 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.cglib.core.Local;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -35,10 +46,10 @@ public class Product implements Serializable {
   private String imgUrl;
 
   @Column(name = "dt_created", updatable = false, nullable = false)
-  private LocalDate dtCreated;
+  private LocalDateTime dtCreated;
 
   @Column(name = "dt_updated", nullable = false)
-  private LocalDate dtUpdated;
+  private LocalDateTime dtUpdated;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")

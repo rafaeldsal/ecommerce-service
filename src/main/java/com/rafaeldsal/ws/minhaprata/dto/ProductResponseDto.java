@@ -3,7 +3,7 @@ package com.rafaeldsal.ws.minhaprata.dto;
 import lombok.Builder;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Builder
 public record ProductResponseDto(
@@ -12,8 +12,8 @@ public record ProductResponseDto(
     String description,
     BigDecimal price,
     String imgUrl,
-    LocalDate dtCreated,
-    LocalDate dtUpdated,
+    LocalDateTime dtCreated,
+    LocalDateTime dtUpdated,
     CategoryDto category
 ) {
 }

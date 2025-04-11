@@ -1,5 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.exception.handler;
 
+import com.rafaeldsal.ws.minhaprata.exception.BusinessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +62,15 @@ public class ResourceHandler {
         .message(d.getMessage())
         .status(HttpStatus.BAD_REQUEST)
         .statusCode(HttpStatus.BAD_REQUEST.value())
+        .build());
+  }
+
+  @ExceptionHandler(BusinessException.class)
+  public ResponseEntity<ErrorResponseDto> handlerBusinessException(BusinessException b) {
+    return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponseDto.builder()
+        .message(b.getMessage())
+        .status(HttpStatus.CONFLICT)
+        .statusCode(HttpStatus.CONFLICT.value())
         .build());
   }
 

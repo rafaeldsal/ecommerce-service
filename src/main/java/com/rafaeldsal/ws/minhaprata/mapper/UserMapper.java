@@ -6,6 +6,7 @@ import com.rafaeldsal.ws.minhaprata.model.User;
 import com.rafaeldsal.ws.minhaprata.model.UserRole;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class UserMapper {
 
@@ -20,8 +21,8 @@ public class UserMapper {
         .cpf(dto.cpf())
         .phoneNumber(dto.phoneNumber())
         .dtBirth(dto.dtBirth())
-        .dtCreated(dto.dtCreated() != null ? dto.dtCreated() : LocalDate.now())
-        .dtUpdated(dto.dtUpdated() != null ? dto.dtUpdated() : LocalDate.now())
+        .dtCreated(dto.dtCreated() != null ? dto.dtCreated() : LocalDateTime.now())
+        .dtUpdated(dto.dtUpdated() != null ? dto.dtUpdated() : LocalDateTime.now())
         .role(dto.role() != null ? dto.role() : UserRole.USER)
         .build();
   }
@@ -33,7 +34,7 @@ public class UserMapper {
     user.setEmail(dto.email() != null ? dto.email() : user.getEmail());
     user.setPhoneNumber(dto.phoneNumber() != null ? dto.phoneNumber() : user.getPhoneNumber());
     user.setDtBirth(dto.dtBirth() != null ? dto.dtBirth() : user.getDtBirth());
-    user.setDtUpdated(LocalDate.now());
+    user.setDtUpdated(LocalDateTime.now());
   }
 
   public static UserResponseDto fromEntityToResponseDto(User user) {

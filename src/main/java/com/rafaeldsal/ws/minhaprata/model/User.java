@@ -17,6 +17,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,10 +55,10 @@ public class User implements Serializable {
   private UserRole role;
 
   @Column(name = "dt_created", updatable = false, nullable = false)
-  private LocalDate dtCreated = LocalDate.now();
+  private LocalDateTime dtCreated = LocalDateTime.now();
 
   @Column(name = "dt_updated", nullable = false)
-  private LocalDate dtUpdated = LocalDate.now();
+  private LocalDateTime dtUpdated = LocalDateTime.now();
 
   @OneToMany(mappedBy = "user")
   private List<Order> orders = new ArrayList<>();

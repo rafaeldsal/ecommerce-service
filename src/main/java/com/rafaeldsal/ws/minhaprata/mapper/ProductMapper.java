@@ -6,7 +6,7 @@ import com.rafaeldsal.ws.minhaprata.dto.ProductResponseDto;
 import com.rafaeldsal.ws.minhaprata.model.Category;
 import com.rafaeldsal.ws.minhaprata.model.Product;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ProductMapper {
 
@@ -17,8 +17,8 @@ public class ProductMapper {
         .description(dto.description())
         .price(dto.price())
         .imgUrl(dto.imgUrl())
-        .dtCreated(dto.dtCreated() != null ? dto.dtCreated() : LocalDate.now())
-        .dtUpdated(dto.dtUpdated() != null ? dto.dtUpdated() : LocalDate.now())
+        .dtCreated(dto.dtCreated() != null ? dto.dtCreated() : LocalDateTime.now())
+        .dtUpdated(dto.dtUpdated() != null ? dto.dtUpdated() : LocalDateTime.now())
         .category(category)
         .build();
   }
@@ -31,7 +31,7 @@ public class ProductMapper {
     product.setDescription(dto.description() != null ? dto.description() : product.getDescription());
     product.setPrice(dto.price() != null ? dto.price() : product.getPrice());
     product.setImgUrl(dto.imgUrl() != null ? dto.imgUrl() : product.getImgUrl());
-    product.setDtUpdated(LocalDate.now());
+    product.setDtUpdated(LocalDateTime.now());
     if (category != null) product.setCategory(category);
   }
 

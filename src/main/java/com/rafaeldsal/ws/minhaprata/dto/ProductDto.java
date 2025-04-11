@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record ProductDto(
 
@@ -25,9 +25,9 @@ public record ProductDto(
 
     String imgUrl,
 
-    LocalDate dtCreated,
+    LocalDateTime dtCreated,
 
-    LocalDate dtUpdated,
+    LocalDateTime dtUpdated,
 
     @NotNull(message = "deve ser informado")
     Long categoryId

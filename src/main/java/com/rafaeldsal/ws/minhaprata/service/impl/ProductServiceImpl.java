@@ -10,7 +10,12 @@ import com.rafaeldsal.ws.minhaprata.model.Product;
 import com.rafaeldsal.ws.minhaprata.repository.CategoryRepository;
 import com.rafaeldsal.ws.minhaprata.repository.ProductRepository;
 import com.rafaeldsal.ws.minhaprata.service.ProductService;
+import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,10 +31,19 @@ public class ProductServiceImpl implements ProductService {
   private CategoryRepository categoryRepository;
 
   @Override
-  public List<ProductResponseDto> findAll() {
-    return productRepository.findAll().stream()
-        .map(ProductMapper::fromEntityToResponseDto)
-        .toList();
+  public Page<ProductResponseDto> findAll(Integer page, Integer size, String sort, String name) {
+
+    Pageable pageable = PageRequest.of(page, size, Sort.by(SortUtils.getSortDirection(sort), "name"));
+
+    Page<Product> products;
+
+    if (name != null && !name.trim().isEmpty()) {
+      products = productRepository.findByNameContainingIgnoreCase(name, pageable);
+    } else {
+      products = productRepository.findAll(pageable);
+    }
+
+    return products.map(ProductMapper::fromEntityToResponseDto);
   }
 
   @Override
@@ -61,9 +75,6 @@ public class ProductServiceImpl implements ProductService {
       category = categoryRepository.findById(product.categoryId())
           .orElseThrow(() -> new NotFoundException("Categoria não encontrada"));
     }
-
-    System.out.println("DTO Img url: " + product.imgUrl());
-    System.out.println("Entity Img url: " + productExisting.getImgUrl());
 
     ProductMapper.updateEntityFromDto(product, productExisting, category);
     productRepository.save(productExisting);

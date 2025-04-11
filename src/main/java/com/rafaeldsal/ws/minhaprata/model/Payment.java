@@ -17,7 +17,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Table(name = "tbl_payment")
 @Entity
@@ -34,7 +34,7 @@ public class Payment implements Serializable {
   private Long id;
 
   @Column(name = "dt_payment", nullable = false)
-  private LocalDate dtPayment;
+  private LocalDateTime dtPayment;
 
   @Column(name = "payment_method", nullable = false)
   private String paymentMethod;

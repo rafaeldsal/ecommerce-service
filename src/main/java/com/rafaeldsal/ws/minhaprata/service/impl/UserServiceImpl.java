@@ -8,8 +8,13 @@ import com.rafaeldsal.ws.minhaprata.mapper.UserMapper;
 import com.rafaeldsal.ws.minhaprata.model.User;
 import com.rafaeldsal.ws.minhaprata.repository.UserRepository;
 import com.rafaeldsal.ws.minhaprata.service.UserService;
+import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,10 +27,16 @@ public class UserServiceImpl implements UserService {
   private UserRepository userRepository;
 
   @Override
-  public List<UserResponseDto> findAll() {
-    return userRepository.findAll().stream()
-        .map(UserMapper::fromEntityToResponseDto)
-        .toList();
+  public Page<UserResponseDto> findAll(Integer page, Integer size, String sort, String name) {
+    Pageable pageable = PageRequest.of(page, size, Sort.by(SortUtils.getSortDirection(sort), "name"));
+
+    Page<User> users;
+    if (name != null && !name.trim().isEmpty()) {
+      users = userRepository.findByNameContainingIgnoreCase(name, pageable);
+    } else {
+      users = userRepository.findAll(pageable);
+    }
+    return users.map(UserMapper::fromEntityToResponseDto);
   }
 
   @Override
@@ -71,12 +82,6 @@ public class UserServiceImpl implements UserService {
         userRepository.existsByPhoneNumberAndIdNot(dto.phoneNumber(), id)) {
       throw new BadRequestException("Telefone já cadastrado");
     }
-
-    System.out.println("DTO data: " + dto.dtUpdated());
-    System.out.println("User data: " + existingUser.getDtUpdated());
-
-    System.out.println("DTO email: " + dto.email());
-    System.out.println("User email: " + existingUser.getEmail());
 
     UserMapper.updateEntityFromDto(dto, existingUser);
     userRepository.save(existingUser);

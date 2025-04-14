@@ -17,6 +17,7 @@ public class ProductMapper {
         .description(dto.description())
         .price(dto.price())
         .imgUrl(dto.imgUrl())
+        .stockQuantity(dto.stockQuantity())
         .dtCreated(dto.dtCreated() != null ? dto.dtCreated() : LocalDateTime.now())
         .dtUpdated(dto.dtUpdated() != null ? dto.dtUpdated() : LocalDateTime.now())
         .category(category)
@@ -30,6 +31,7 @@ public class ProductMapper {
     product.setName(dto.name() != null ? dto.name() : product.getName());
     product.setDescription(dto.description() != null ? dto.description() : product.getDescription());
     product.setPrice(dto.price() != null ? dto.price() : product.getPrice());
+    product.setStockQuantity(dto.stockQuantity() != null ? dto.stockQuantity() : product.getStockQuantity());
     product.setImgUrl(dto.imgUrl() != null ? dto.imgUrl() : product.getImgUrl());
     product.setDtUpdated(LocalDateTime.now());
     if (category != null) product.setCategory(category);
@@ -42,6 +44,7 @@ public class ProductMapper {
         .description(product.getDescription())
         .price(product.getPrice())
         .imgUrl(product.getImgUrl())
+        .stockQuantity(product.getStockQuantity())
         .dtCreated(product.getDtCreated())
         .dtUpdated(product.getDtUpdated())
         .category(product.getCategory() != null ?

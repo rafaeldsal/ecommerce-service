@@ -41,8 +41,11 @@ public class OrderHistory implements Serializable {
   @Column(name = "dt_event", nullable = false)
   private LocalDateTime dtEvent;
 
-  @Column(name = "dt_created", nullable = false)
-  private LocalDateTime dtCreated = LocalDateTime.now();
+  @Column(name = "dt_created_order", nullable = false)
+  private LocalDateTime dtCreatedOrder;
+
+  @Column(name = "dt_updated", nullable = false)
+  private LocalDateTime dtUpdated;
 
   private String note;
 

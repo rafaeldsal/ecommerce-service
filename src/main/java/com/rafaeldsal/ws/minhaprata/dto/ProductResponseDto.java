@@ -12,6 +12,7 @@ public record ProductResponseDto(
     String description,
     BigDecimal price,
     String imgUrl,
+    Long stockQuantity,
     LocalDateTime dtCreated,
     LocalDateTime dtUpdated,
     CategoryDto category

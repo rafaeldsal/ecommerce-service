@@ -5,22 +5,34 @@ import com.rafaeldsal.ws.minhaprata.dto.OrderItemDto;
 import com.rafaeldsal.ws.minhaprata.dto.OrderResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BusinessException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
+import com.rafaeldsal.ws.minhaprata.mapper.OrderHistoryMapper;
 import com.rafaeldsal.ws.minhaprata.mapper.OrderItemMapper;
 import com.rafaeldsal.ws.minhaprata.mapper.OrderMapper;
 import com.rafaeldsal.ws.minhaprata.model.Order;
+import com.rafaeldsal.ws.minhaprata.model.OrderHistory;
 import com.rafaeldsal.ws.minhaprata.model.OrderItem;
 import com.rafaeldsal.ws.minhaprata.model.OrderStatus;
+import com.rafaeldsal.ws.minhaprata.model.Product;
+import com.rafaeldsal.ws.minhaprata.repository.OrderHistoryRepository;
 import com.rafaeldsal.ws.minhaprata.repository.OrderItemRepository;
 import com.rafaeldsal.ws.minhaprata.repository.OrderRepository;
+import com.rafaeldsal.ws.minhaprata.repository.ProductRepository;
 import com.rafaeldsal.ws.minhaprata.repository.UserRepository;
 import com.rafaeldsal.ws.minhaprata.service.OrderService;
+import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -35,7 +47,13 @@ public class OrderServiceImpl implements OrderService {
   private OrderItemRepository orderItemRepository;
 
   @Autowired
+  private ProductRepository productRepository;
+
+  @Autowired
   private OrderItemMapper orderItemMapper;
+
+  @Autowired
+  private OrderHistoryRepository orderHistoryRepository;
 
   @Override
   public Order findById(Long id) {
@@ -43,16 +61,25 @@ public class OrderServiceImpl implements OrderService {
   }
 
   @Override
-  public List<Order> findAll() {
-    return List.of();
+  public Page<OrderResponseDto> findAll(Integer page, Integer size, String sort) {
+    Pageable pageable = PageRequest.of(page, size, Sort.by(SortUtils.getSortDirection(sort), "dtOder"));
+    Page<Order> orders = orderRepository.findAll(pageable);
+
+    return orders.map(OrderMapper::entityToResponseDto);
   }
 
   @Override
-  public List<Order> findAllByUserId(Long id) {
-    return List.of();
+  public Page<OrderResponseDto> findAllByUserId(Integer page, Integer size, String sort, Long userId) {
+    var userExisting = userRepository.findById(userId)
+        .orElseThrow(() -> new NotFoundException("Usuário não localizados"));
+
+    Pageable pageable = PageRequest.of(page, size, Sort.by(SortUtils.getSortDirection(sort), "dtOrder"));
+    Page<Order> orders = orderRepository.findAllByUserId(userExisting.getId(), pageable);
+    return orders.map(OrderMapper::entityToResponseDto);
   }
 
   @Override
+  @Transactional
   public OrderResponseDto create(OrderDto dto) {
     var user = userRepository.findById(dto.userId())
         .orElseThrow(() -> new NotFoundException("Usuário não localizado"));
@@ -82,11 +109,15 @@ public class OrderServiceImpl implements OrderService {
     order.setOrderItems(orderItems);
     orderRepository.save(order);
 
+    OrderHistory orderHistory = OrderHistoryMapper.toEntity(order, user, "Pedido criado com sucesso");
+    orderHistoryRepository.save(orderHistory);
+
     return OrderMapper.entityToResponseDto(order);
   }
 
   @Override
-  public OrderResponseDto update(OrderDto dto, Long id) {
+  @Transactional
+  public OrderResponseDto updateCartItems(OrderDto dto, Long id) {
 
     var user = userRepository.findById(dto.userId())
         .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
@@ -96,30 +127,63 @@ public class OrderServiceImpl implements OrderService {
 
     validateOrderUpdate(order, dto.userId());
 
-    List<OrderItem> updatedOrderItems = new ArrayList<>();
-
-    for (OrderItemDto itemDto : dto.orderItems()) {
-      OrderItem item  = getOrCreateOrderItem(itemDto, order);
-      updatedOrderItems.add(item);
-    }
+    List<OrderItem> updatedOrderItems = dto.orderItems().stream()
+        .map(itemDto -> getOrCreateOrderItem(itemDto, order))
+        .peek(item -> item.setOrder(order))
+        .toList();
 
     BigDecimal totalPrice = calculateTotalPrice(updatedOrderItems);
 
+    orderItemRepository.deleteAllByOrderId(order.getId());
+    order.setOrderItems(updatedOrderItems);
     order.setTotalPrice(totalPrice);
     order.setUser(user);
     order.setDtUpdated(LocalDateTime.now());
-
-    orderItemRepository.deleteAllByOrderId(order.getId());
-    order.setOrderItems(updatedOrderItems);
-
-    for (OrderItem item : updatedOrderItems) {
-      item.setOrder(order);
-    }
 
     orderRepository.save(order);
 
     return OrderMapper.entityToResponseDto(order);
   }
+
+  @Override
+  @Transactional
+  public OrderResponseDto updateOrderStatus(OrderStatus orderStatus, Long orderId) {
+
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+
+    if (order.getStatus().equals(orderStatus)) {
+      throw new BusinessException("Pedido já se encontra nesse status " + order.getStatus());
+    }
+
+    if (OrderStatus.PAID.equals(order.getStatus()) && OrderStatus.CANCELLED.equals(orderStatus)) {
+      throw new BusinessException("Pedido não pode ser cancelado.");
+    }
+
+    order.setStatus(orderStatus);
+    orderRepository.save(order);
+
+    List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
+
+    if (OrderStatus.CANCELLED.equals(orderStatus)) {
+      updateStock(orderItems, false);
+    } else if (OrderStatus.PAID.equals(orderStatus)) {
+      updateStock(orderItems, true);
+    }
+
+    return OrderMapper.entityToResponseDto(order);
+  }
+
+  private void updateStock(List<OrderItem> items, boolean increment) {
+    for (OrderItem item : items) {
+      Product product = item.getProduct();
+      product.setStockQuantity(increment ?
+          product.getStockQuantity() + item.getQuantity()
+          : product.getStockQuantity() - item.getQuantity());
+      productRepository.save(product);
+    }
+  }
+
 
   private BigDecimal calculateTotalPrice(List<OrderItem> orderItems) {
     return orderItems.stream()

@@ -25,6 +25,8 @@ public record ProductDto(
 
     String imgUrl,
 
+    Long stockQuantity,
+
     LocalDateTime dtCreated,
 
     LocalDateTime dtUpdated,

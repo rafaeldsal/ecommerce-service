@@ -45,6 +45,9 @@ public class Product implements Serializable {
   @Column(name = "img_url")
   private String imgUrl;
 
+  @Column(name = "stock_quantity", nullable = false)
+  private Long stockQuantity;
+
   @Column(name = "dt_created", updatable = false, nullable = false)
   private LocalDateTime dtCreated;
 

@@ -1,5 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.model;
 
+import com.rafaeldsal.ws.minhaprata.model.enums.OrderStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

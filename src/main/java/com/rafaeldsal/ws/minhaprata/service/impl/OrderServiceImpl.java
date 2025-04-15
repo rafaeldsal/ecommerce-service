@@ -11,7 +11,7 @@ import com.rafaeldsal.ws.minhaprata.mapper.OrderMapper;
 import com.rafaeldsal.ws.minhaprata.model.Order;
 import com.rafaeldsal.ws.minhaprata.model.OrderHistory;
 import com.rafaeldsal.ws.minhaprata.model.OrderItem;
-import com.rafaeldsal.ws.minhaprata.model.OrderStatus;
+import com.rafaeldsal.ws.minhaprata.model.enums.OrderStatus;
 import com.rafaeldsal.ws.minhaprata.model.Product;
 import com.rafaeldsal.ws.minhaprata.repository.OrderHistoryRepository;
 import com.rafaeldsal.ws.minhaprata.repository.OrderItemRepository;
@@ -32,7 +32,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {

@@ -1,7 +1,7 @@
 package com.rafaeldsal.ws.minhaprata.dto;
 
-import com.rafaeldsal.ws.minhaprata.model.OrderStatus;
-import com.rafaeldsal.ws.minhaprata.model.UserRole;
+import com.rafaeldsal.ws.minhaprata.model.enums.OrderStatus;
+import com.rafaeldsal.ws.minhaprata.model.enums.UserRole;
 import lombok.Builder;
 
 import java.time.LocalDateTime;

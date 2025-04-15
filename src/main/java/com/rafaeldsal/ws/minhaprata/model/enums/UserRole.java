@@ -1,10 +1,11 @@
-package com.rafaeldsal.ws.minhaprata.model;
+package com.rafaeldsal.ws.minhaprata.model.enums;
 
-public enum UserRole {
+import org.springframework.security.core.GrantedAuthority;
+
+public enum UserRole implements GrantedAuthority {
 
   ADMIN("admin"),
-  USER("user"),
-  GHOST("ghost");
+  USER("user");
 
   private String role;
 
@@ -20,5 +21,10 @@ public enum UserRole {
     }
 
     throw new IllegalArgumentException("Role inválida: " + str);
+  }
+
+  @Override
+  public String getAuthority() {
+    return "ROLE_" + role.toUpperCase();
   }
 }

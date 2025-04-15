@@ -3,9 +3,8 @@ package com.rafaeldsal.ws.minhaprata.mapper;
 import com.rafaeldsal.ws.minhaprata.dto.UserDto;
 import com.rafaeldsal.ws.minhaprata.dto.UserResponseDto;
 import com.rafaeldsal.ws.minhaprata.model.User;
-import com.rafaeldsal.ws.minhaprata.model.UserRole;
+import com.rafaeldsal.ws.minhaprata.model.enums.UserRole;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class UserMapper {

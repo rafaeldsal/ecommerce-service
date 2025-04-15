@@ -1,6 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.dto;
 
-import com.rafaeldsal.ws.minhaprata.model.OrderStatus;
+import com.rafaeldsal.ws.minhaprata.model.enums.OrderStatus;
 
 import java.util.List;
 

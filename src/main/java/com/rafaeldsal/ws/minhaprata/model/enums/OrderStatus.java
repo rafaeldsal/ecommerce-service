@@ -1,4 +1,4 @@
-package com.rafaeldsal.ws.minhaprata.model;
+package com.rafaeldsal.ws.minhaprata.model.enums;
 
 public enum OrderStatus {
   PENDING("pending"),

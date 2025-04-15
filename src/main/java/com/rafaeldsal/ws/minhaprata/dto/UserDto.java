@@ -1,6 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.dto;
 
-import com.rafaeldsal.ws.minhaprata.model.UserRole;
+import com.rafaeldsal.ws.minhaprata.model.enums.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
@@ -34,7 +34,10 @@ public record UserDto(
 
     LocalDateTime dtCreated,
 
-    LocalDateTime dtUpdated
+    LocalDateTime dtUpdated,
+
+    @NotBlank(message = "atributo obrigatório")
+    String password
 ) {
 
 }

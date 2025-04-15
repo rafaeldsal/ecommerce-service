@@ -4,8 +4,11 @@ import com.rafaeldsal.ws.minhaprata.dto.UserDto;
 import com.rafaeldsal.ws.minhaprata.dto.UserResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
+import com.rafaeldsal.ws.minhaprata.mapper.UserCredentialsMapper;
 import com.rafaeldsal.ws.minhaprata.mapper.UserMapper;
 import com.rafaeldsal.ws.minhaprata.model.User;
+import com.rafaeldsal.ws.minhaprata.model.UserCredentials;
+import com.rafaeldsal.ws.minhaprata.repository.UserDetailsRepository;
 import com.rafaeldsal.ws.minhaprata.repository.UserRepository;
 import com.rafaeldsal.ws.minhaprata.service.UserService;
 import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
@@ -25,6 +28,9 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private UserRepository userRepository;
+
+  @Autowired
+  private UserDetailsRepository userDetailsRepository;
 
   @Override
   public Page<UserResponseDto> findAll(Integer page, Integer size, String sort, String name) {
@@ -58,6 +64,9 @@ public class UserServiceImpl implements UserService {
     }
 
     User user = userRepository.save(UserMapper.fromDtoToEntity(dto));
+
+    UserCredentials userCredentials = UserCredentialsMapper.fromDtoToEntity(dto);
+    userDetailsRepository.save(userCredentials);
 
     return UserMapper.fromEntityToResponseDto(user);
   }

@@ -2,13 +2,14 @@ package com.rafaeldsal.ws.minhaprata.controller;
 
 import com.rafaeldsal.ws.minhaprata.dto.OrderDto;
 import com.rafaeldsal.ws.minhaprata.dto.OrderResponseDto;
-import com.rafaeldsal.ws.minhaprata.model.OrderStatus;
+import com.rafaeldsal.ws.minhaprata.model.enums.OrderStatus;
 import com.rafaeldsal.ws.minhaprata.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ public class OrderController {
   @Autowired
   private OrderService orderService;
 
+  @PreAuthorize("hasRole('ADMIN')")
   @GetMapping
   public ResponseEntity<Page<OrderResponseDto>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,
                                                         @RequestParam(value = "size", defaultValue = "10") Integer size,

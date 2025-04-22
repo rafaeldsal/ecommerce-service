@@ -4,6 +4,7 @@ import com.rafaeldsal.ws.minhaprata.dto.UserDto;
 import com.rafaeldsal.ws.minhaprata.dto.UserResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
+import com.rafaeldsal.ws.minhaprata.integration.MailIntegration;
 import com.rafaeldsal.ws.minhaprata.mapper.UserCredentialsMapper;
 import com.rafaeldsal.ws.minhaprata.mapper.UserMapper;
 import com.rafaeldsal.ws.minhaprata.model.User;
@@ -14,6 +15,7 @@ import com.rafaeldsal.ws.minhaprata.service.UserService;
 import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,12 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   private UserDetailsRepository userDetailsRepository;
+
+  @Autowired
+  private MailIntegration mailIntegration;
+
+  @Value("${}")
+  private String urlSiteMinhaPrata;
 
   @Override
   public Page<UserResponseDto> findAll(Integer page, Integer size, String sort, String name) {
@@ -67,6 +75,11 @@ public class UserServiceImpl implements UserService {
 
     UserCredentials userCredentials = UserCredentialsMapper.fromDtoToEntity(dto);
     userDetailsRepository.save(userCredentials);
+
+    String message = messageCreateAccount(user.getName());
+    String subject = "\u2728 Seja bem-vindo ao Minha Prata!";
+
+    mailIntegration.send(user.getEmail(), message, subject);
 
     return UserMapper.fromEntityToResponseDto(user);
   }
@@ -108,5 +121,23 @@ public class UserServiceImpl implements UserService {
     return userRepository.findById(id).orElseThrow(
         () -> new NotFoundException("Usuário não encontrado")
     );
+  }
+
+  private String messageCreateAccount(String name) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Olá, ").append(name).append("! \u2728 \n\n");
+    sb.append("Seja muito bem-vindo(a) ao Minha Prata, a sua nova casa para encontrar joias de prata com elegância, carinho e qualidade.\n\n");
+    sb.append("Seu cadastro foi realizado com sucesso, e agora você pode:\n\n");
+    sb.append("\uD83D\uDC8D Explorar nossa coleção de brincos, anéis, braceletes e colares.\n");
+    sb.append("\uD83D\uDED2 Adicionar seus produtos favoritos à sacola.\n");
+    sb.append("\uD83D\uDCE6 Acompanhar seus pedidos diretamente pela sua conta.\n");
+    sb.append("\uD83C\uDF81 Ficar por dentro de promoções e lançamentos exclusivos.\n\n");
+    sb.append("Estamos muito felizes em ter você com a gente!!\n");
+    sb.append("Se tiver qualquer dúvida, nossa equipe está pronta para ajudar.\n\n");
+    sb.append("Com carinho,\n");
+    sb.append("Equipe Minha Prata\n");
+    sb.append(urlSiteMinhaPrata).append(" | @minhaprata");
+
+    return sb.toString();
   }
 }

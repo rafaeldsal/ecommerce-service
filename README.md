@@ -2,8 +2,6 @@
 
 ## Índice
 
----
-
 * [Descrição](#descrição)
 * [Tecnologias Utilizadas](#tecnologias-utilizadas)
 * [Configuração do ambiente](#configuração-do-ambiente)

@@ -2,7 +2,7 @@ package com.rafaeldsal.ws.minhaprata.controller;
 
 import com.rafaeldsal.ws.minhaprata.dto.ProductDto;
 import com.rafaeldsal.ws.minhaprata.dto.ProductResponseDto;
-import com.rafaeldsal.ws.minhaprata.model.Product;
+import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
 import com.rafaeldsal.ws.minhaprata.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

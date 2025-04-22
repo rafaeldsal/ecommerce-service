@@ -2,10 +2,8 @@ package com.rafaeldsal.ws.minhaprata.service;
 
 import com.rafaeldsal.ws.minhaprata.dto.ProductDto;
 import com.rafaeldsal.ws.minhaprata.dto.ProductResponseDto;
-import com.rafaeldsal.ws.minhaprata.model.Product;
+import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
 import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 public interface ProductService {
 

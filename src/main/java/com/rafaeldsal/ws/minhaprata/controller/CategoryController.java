@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rafaeldsal.ws.minhaprata.dto.CategoryDto;
-import com.rafaeldsal.ws.minhaprata.model.Category;
+import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
 import com.rafaeldsal.ws.minhaprata.service.CategoryService;
 
 @RestController

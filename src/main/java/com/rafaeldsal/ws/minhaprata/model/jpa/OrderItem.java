@@ -1,4 +1,4 @@
-package com.rafaeldsal.ws.minhaprata.model;
+package com.rafaeldsal.ws.minhaprata.model.jpa;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,33 +17,32 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
-@Table(name = "tbl_payment")
 @Entity
+@Table(name = "tbl_order_item")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Payment implements Serializable {
+public class OrderItem implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "payment_id", unique = true, nullable = false, updatable = false)
+  @Column(name = "order_item_id", unique = true, nullable = false, updatable = false)
   private Long id;
 
-  @Column(name = "dt_payment", nullable = false)
-  private LocalDateTime dtPayment;
-
-  @Column(name = "payment_method", nullable = false)
-  private String paymentMethod;
-
   @Column(nullable = false)
-  private BigDecimal amount;
+  private Integer quantity;
+
+  @Column(name = "price_at_purchase", nullable = false)
+  private BigDecimal priceAtPurchase;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "order_id")
+  @JoinColumn(name = "order_id", nullable = false)
   private Order order;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "product_id", nullable = false)
+  private Product product;
 }

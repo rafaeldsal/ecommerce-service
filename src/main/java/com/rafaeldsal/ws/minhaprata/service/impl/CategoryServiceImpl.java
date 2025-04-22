@@ -10,8 +10,8 @@ import com.rafaeldsal.ws.minhaprata.dto.CategoryDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.mapper.CategoryMapper;
-import com.rafaeldsal.ws.minhaprata.model.Category;
-import com.rafaeldsal.ws.minhaprata.repository.CategoryRepository;
+import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
+import com.rafaeldsal.ws.minhaprata.repository.jpa.CategoryRepository;
 import com.rafaeldsal.ws.minhaprata.service.CategoryService;
 
 @Service

@@ -1,6 +1,6 @@
-package com.rafaeldsal.ws.minhaprata.repository;
+package com.rafaeldsal.ws.minhaprata.repository.jpa;
 
-import com.rafaeldsal.ws.minhaprata.model.UserCredentials;
+import com.rafaeldsal.ws.minhaprata.model.jpa.UserCredentials;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

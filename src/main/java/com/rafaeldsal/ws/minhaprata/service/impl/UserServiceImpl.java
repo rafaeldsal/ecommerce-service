@@ -7,10 +7,10 @@ import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.integration.MailIntegration;
 import com.rafaeldsal.ws.minhaprata.mapper.UserCredentialsMapper;
 import com.rafaeldsal.ws.minhaprata.mapper.UserMapper;
-import com.rafaeldsal.ws.minhaprata.model.User;
-import com.rafaeldsal.ws.minhaprata.model.UserCredentials;
-import com.rafaeldsal.ws.minhaprata.repository.UserDetailsRepository;
-import com.rafaeldsal.ws.minhaprata.repository.UserRepository;
+import com.rafaeldsal.ws.minhaprata.model.jpa.User;
+import com.rafaeldsal.ws.minhaprata.model.jpa.UserCredentials;
+import com.rafaeldsal.ws.minhaprata.repository.jpa.UserDetailsRepository;
+import com.rafaeldsal.ws.minhaprata.repository.jpa.UserRepository;
 import com.rafaeldsal.ws.minhaprata.service.UserService;
 import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
 import jakarta.transaction.Transactional;
@@ -22,7 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -37,7 +36,7 @@ public class UserServiceImpl implements UserService {
   @Autowired
   private MailIntegration mailIntegration;
 
-  @Value("${}")
+  @Value("${webservices.minhaprata.default.url.site}")
   private String urlSiteMinhaPrata;
 
   @Override

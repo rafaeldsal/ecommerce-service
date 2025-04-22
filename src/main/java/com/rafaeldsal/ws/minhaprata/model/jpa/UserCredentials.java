@@ -1,4 +1,4 @@
-package com.rafaeldsal.ws.minhaprata.model;
+package com.rafaeldsal.ws.minhaprata.model.jpa;
 
 import com.rafaeldsal.ws.minhaprata.model.enums.UserRole;
 import jakarta.persistence.Column;
@@ -13,17 +13,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "tbl_user_credentials")
 @Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,6 +37,8 @@ public class UserCredentials implements UserDetails {
   private String username;
 
   private String password;
+
+  private String name;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)

@@ -2,7 +2,7 @@ package com.rafaeldsal.ws.minhaprata.mapper;
 
 import com.rafaeldsal.ws.minhaprata.dto.OrderItemResponseDto;
 import com.rafaeldsal.ws.minhaprata.dto.OrderResponseDto;
-import com.rafaeldsal.ws.minhaprata.model.Order;
+import com.rafaeldsal.ws.minhaprata.model.jpa.Order;
 
 public class OrderMapper {
 

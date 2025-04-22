@@ -3,8 +3,8 @@ package com.rafaeldsal.ws.minhaprata.mapper;
 import com.rafaeldsal.ws.minhaprata.dto.CategoryDto;
 import com.rafaeldsal.ws.minhaprata.dto.ProductDto;
 import com.rafaeldsal.ws.minhaprata.dto.ProductResponseDto;
-import com.rafaeldsal.ws.minhaprata.model.Category;
-import com.rafaeldsal.ws.minhaprata.model.Product;
+import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
+import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
 
 import java.time.LocalDateTime;
 

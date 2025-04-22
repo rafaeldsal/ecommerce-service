@@ -1,4 +1,4 @@
-package com.rafaeldsal.ws.minhaprata.model;
+package com.rafaeldsal.ws.minhaprata.model.jpa;
 
 import com.rafaeldsal.ws.minhaprata.model.enums.OrderStatus;
 import jakarta.persistence.CascadeType;

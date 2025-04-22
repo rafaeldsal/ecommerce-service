@@ -1,10 +1,7 @@
-package com.rafaeldsal.ws.minhaprata.model;
+package com.rafaeldsal.ws.minhaprata.model.jpa;
 
-import com.rafaeldsal.ws.minhaprata.model.enums.OrderStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
@@ -27,34 +25,37 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "tbl_order_history")
-public class OrderHistory implements Serializable {
+@Table(name = "tbl_product")
+public class Product implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "history_id", unique = true, nullable = false, updatable = false)
+  @Column(name = "product_id", nullable = false, unique = true, updatable = false)
   private Long id;
 
-  @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private OrderStatus status;
+  private String name;
 
-  @Column(name = "dt_event", nullable = false)
-  private LocalDateTime dtEvent;
+  @Column(nullable = false)
+  private String description;
 
-  @Column(name = "dt_created_order", nullable = false)
-  private LocalDateTime dtCreatedOrder;
+  @Column(nullable = false)
+  private BigDecimal price;
+
+  @Column(name = "img_url")
+  private String imgUrl;
+
+  @Column(name = "stock_quantity", nullable = false)
+  private Long stockQuantity;
+
+  @Column(name = "dt_created", updatable = false, nullable = false)
+  private LocalDateTime dtCreated;
 
   @Column(name = "dt_updated", nullable = false)
   private LocalDateTime dtUpdated;
 
-  private String note;
-
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "order_id", nullable = false)
-  private Order order;
+  @JoinColumn(name = "category_id")
+  private Category category;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user_id")
-  private User user;
 }

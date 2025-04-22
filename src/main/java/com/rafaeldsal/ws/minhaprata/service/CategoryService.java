@@ -3,7 +3,7 @@ package com.rafaeldsal.ws.minhaprata.service;
 import java.util.List;
 
 import com.rafaeldsal.ws.minhaprata.dto.CategoryDto;
-import com.rafaeldsal.ws.minhaprata.model.Category;
+import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
 
 public interface CategoryService {
 

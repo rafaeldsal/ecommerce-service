@@ -2,8 +2,8 @@ package com.rafaeldsal.ws.minhaprata.mapper;
 
 import com.rafaeldsal.ws.minhaprata.dto.OrderItemDto;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
-import com.rafaeldsal.ws.minhaprata.model.OrderItem;
-import com.rafaeldsal.ws.minhaprata.repository.ProductRepository;
+import com.rafaeldsal.ws.minhaprata.model.jpa.OrderItem;
+import com.rafaeldsal.ws.minhaprata.repository.jpa.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

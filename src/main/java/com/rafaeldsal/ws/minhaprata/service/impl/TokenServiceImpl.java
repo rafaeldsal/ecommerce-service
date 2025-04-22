@@ -1,6 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.service.impl;
 
-import com.rafaeldsal.ws.minhaprata.model.UserCredentials;
+import com.rafaeldsal.ws.minhaprata.model.jpa.UserCredentials;
 import com.rafaeldsal.ws.minhaprata.service.TokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;

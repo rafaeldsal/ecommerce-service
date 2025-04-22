@@ -1,6 +1,6 @@
-package com.rafaeldsal.ws.minhaprata.repository;
+package com.rafaeldsal.ws.minhaprata.repository.jpa;
 
-import com.rafaeldsal.ws.minhaprata.model.User;
+import com.rafaeldsal.ws.minhaprata.model.jpa.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

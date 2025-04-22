@@ -1,4 +1,4 @@
-package com.rafaeldsal.ws.minhaprata.model;
+package com.rafaeldsal.ws.minhaprata.model.jpa;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,43 +19,31 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+@Table(name = "tbl_payment")
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "tbl_product")
-public class Product implements Serializable {
+public class Payment implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "product_id", nullable = false, unique = true, updatable = false)
+  @Column(name = "payment_id", unique = true, nullable = false, updatable = false)
   private Long id;
 
-  @Column(nullable = false)
-  private String name;
+  @Column(name = "dt_payment", nullable = false)
+  private LocalDateTime dtPayment;
+
+  @Column(name = "payment_method", nullable = false)
+  private String paymentMethod;
 
   @Column(nullable = false)
-  private String description;
-
-  @Column(nullable = false)
-  private BigDecimal price;
-
-  @Column(name = "img_url")
-  private String imgUrl;
-
-  @Column(name = "stock_quantity", nullable = false)
-  private Long stockQuantity;
-
-  @Column(name = "dt_created", updatable = false, nullable = false)
-  private LocalDateTime dtCreated;
-
-  @Column(name = "dt_updated", nullable = false)
-  private LocalDateTime dtUpdated;
+  private BigDecimal amount;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "category_id")
-  private Category category;
+  @JoinColumn(name = "order_id")
+  private Order order;
 
 }

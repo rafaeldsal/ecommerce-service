@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MailIntegrationImpl implements MailIntegration {
 
-  @Value("${webservices.minhaprata..default.sender}")
+  @Value("${webservices.minhaprata.default.sender}")
   private String sender;
 
   @Autowired

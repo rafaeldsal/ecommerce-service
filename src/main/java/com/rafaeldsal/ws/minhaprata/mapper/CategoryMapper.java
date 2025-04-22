@@ -1,7 +1,7 @@
 package com.rafaeldsal.ws.minhaprata.mapper;
 
 import com.rafaeldsal.ws.minhaprata.dto.CategoryDto;
-import com.rafaeldsal.ws.minhaprata.model.Category;
+import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
 
 public class CategoryMapper {
 

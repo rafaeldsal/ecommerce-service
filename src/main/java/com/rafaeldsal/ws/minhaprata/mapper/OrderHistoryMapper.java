@@ -1,9 +1,9 @@
 package com.rafaeldsal.ws.minhaprata.mapper;
 
 import com.rafaeldsal.ws.minhaprata.dto.OrderHistoryResponseDto;
-import com.rafaeldsal.ws.minhaprata.model.Order;
-import com.rafaeldsal.ws.minhaprata.model.OrderHistory;
-import com.rafaeldsal.ws.minhaprata.model.User;
+import com.rafaeldsal.ws.minhaprata.model.jpa.Order;
+import com.rafaeldsal.ws.minhaprata.model.jpa.OrderHistory;
+import com.rafaeldsal.ws.minhaprata.model.jpa.User;
 
 import java.time.LocalDateTime;
 

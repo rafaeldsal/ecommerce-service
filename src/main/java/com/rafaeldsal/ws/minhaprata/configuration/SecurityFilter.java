@@ -1,8 +1,7 @@
 package com.rafaeldsal.ws.minhaprata.configuration;
 
-import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.exception.UnauthorizedException;
-import com.rafaeldsal.ws.minhaprata.repository.UserDetailsRepository;
+import com.rafaeldsal.ws.minhaprata.repository.jpa.UserDetailsRepository;
 import com.rafaeldsal.ws.minhaprata.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

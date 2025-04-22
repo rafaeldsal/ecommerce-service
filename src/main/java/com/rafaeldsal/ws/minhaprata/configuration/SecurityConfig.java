@@ -43,6 +43,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.POST, "/category/**").hasRole("ADMIN")
             .requestMatchers(HttpMethod.GET, "/order-history/*").hasRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/user").permitAll()
+            .requestMatchers("/auth/recovery-code/**").permitAll()
             .requestMatchers(HttpMethod.POST, "/auth").permitAll()
             .anyRequest().authenticated())
         .httpBasic(AbstractHttpConfigurer::disable)

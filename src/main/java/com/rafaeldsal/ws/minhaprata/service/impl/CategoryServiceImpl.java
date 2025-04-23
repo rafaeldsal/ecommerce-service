@@ -1,11 +1,5 @@
 package com.rafaeldsal.ws.minhaprata.service.impl;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
 import com.rafaeldsal.ws.minhaprata.dto.CategoryDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
@@ -13,6 +7,11 @@ import com.rafaeldsal.ws.minhaprata.mapper.CategoryMapper;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.CategoryRepository;
 import com.rafaeldsal.ws.minhaprata.service.CategoryService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {

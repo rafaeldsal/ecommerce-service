@@ -14,7 +14,7 @@ import com.rafaeldsal.ws.minhaprata.repository.jpa.UserRepository;
 import com.rafaeldsal.ws.minhaprata.service.UserService;
 import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,16 +25,14 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-  @Autowired
-  private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-  @Autowired
-  private UserDetailsRepository userDetailsRepository;
+  private final UserDetailsRepository userDetailsRepository;
 
-  @Autowired
-  private MailIntegration mailIntegration;
+  private final MailIntegration mailIntegration;
 
   @Value("${webservices.minhaprata.default.url.site}")
   private String urlSiteMinhaPrata;
@@ -59,6 +57,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  @Transactional
   public UserResponseDto create(UserDto dto) {
     if (Objects.nonNull(dto.id())) {
       throw new BadRequestException("userId não pode ser definido");
@@ -92,10 +91,8 @@ public class UserServiceImpl implements UserService {
       throw new BadRequestException("CPF não pode ser alterado");
     }
 
-    if (dto.email() != null &&
-        !dto.email().equals(existingUser.getEmail()) &&
-        userRepository.existsByEmailAndIdNot(dto.email(), id)) {
-      throw new BadRequestException("E-mail já cadastrado");
+    if (!existingUser.getEmail().equals(dto.email())) {
+      throw new BadRequestException("E-mail não pode ser alterado. Entre em contato com o suporte");
     }
 
     if (dto.phoneNumber() != null &&

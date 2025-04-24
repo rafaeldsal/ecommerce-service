@@ -7,20 +7,19 @@ import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderHistoryRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderRepository;
 import com.rafaeldsal.ws.minhaprata.service.OrderHistoryService;
 import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class OrderHistoryServiceImpl implements OrderHistoryService {
 
-  @Autowired
-  private OrderHistoryRepository orderHistoryRepository;
+  private final OrderHistoryRepository orderHistoryRepository;
 
-  @Autowired
-  private OrderRepository orderRepository;
+  private final OrderRepository orderRepository;
 
   @Override
   public Page<OrderHistoryResponseDto> findAllHistoryByOrderId(Integer page, Integer size, String sort, Long orderId) {

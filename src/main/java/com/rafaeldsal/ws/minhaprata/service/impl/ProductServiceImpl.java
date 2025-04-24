@@ -11,7 +11,7 @@ import com.rafaeldsal.ws.minhaprata.repository.jpa.CategoryRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.ProductRepository;
 import com.rafaeldsal.ws.minhaprata.service.ProductService;
 import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,13 +21,12 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
-  @Autowired
-  private ProductRepository productRepository;
+  private final ProductRepository productRepository;
 
-  @Autowired
-  private CategoryRepository categoryRepository;
+  private final CategoryRepository categoryRepository;
 
   @Override
   public Page<ProductResponseDto> findAll(Integer page, Integer size, String sort, String name) {

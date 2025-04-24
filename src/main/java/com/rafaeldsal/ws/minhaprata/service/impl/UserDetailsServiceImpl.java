@@ -9,7 +9,7 @@ import com.rafaeldsal.ws.minhaprata.repository.jpa.UserDetailsRepository;
 import com.rafaeldsal.ws.minhaprata.repository.redis.UserRecoveryCodeRepository;
 import com.rafaeldsal.ws.minhaprata.service.CustomUserService;
 import com.rafaeldsal.ws.minhaprata.utils.PasswordUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Random;
 
 @Service
+@RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService, CustomUserService {
 
   @Value("${webservices.minhaprata.default.url.site}")
@@ -28,14 +29,11 @@ public class UserDetailsServiceImpl implements UserDetailsService, CustomUserSer
   @Value("${webservices.minhaprata.recoveryCode.timeout}")
   private String recoveryCodeTimeout;
 
-  @Autowired
-  private UserDetailsRepository userDetailsRepository;
+  private final UserDetailsRepository userDetailsRepository;
 
-  @Autowired
-  private UserRecoveryCodeRepository userRecoveryCodeRepository;
+  private final UserRecoveryCodeRepository userRecoveryCodeRepository;
 
-  @Autowired
-  private MailIntegration mailIntegration;
+  private final MailIntegration mailIntegration;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

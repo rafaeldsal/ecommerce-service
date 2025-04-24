@@ -7,6 +7,7 @@ import com.rafaeldsal.ws.minhaprata.mapper.CategoryMapper;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.CategoryRepository;
 import com.rafaeldsal.ws.minhaprata.service.CategoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,13 +15,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
   private final CategoryRepository categoryRepository;
-
-  CategoryServiceImpl(CategoryRepository categoryRepository) {
-    this.categoryRepository = categoryRepository;
-  }
 
   @Override
   public List<Category> readAll() {

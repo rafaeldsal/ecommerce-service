@@ -2,9 +2,11 @@ package com.rafaeldsal.ws.minhaprata.dto;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 
 import java.math.BigDecimal;
 
+@Builder
 public record OrderItemDto(
 
     @NotNull(message = "não pode ser nulo")

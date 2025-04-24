@@ -8,10 +8,10 @@ import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.mapper.OrderHistoryMapper;
 import com.rafaeldsal.ws.minhaprata.mapper.OrderItemMapper;
 import com.rafaeldsal.ws.minhaprata.mapper.OrderMapper;
+import com.rafaeldsal.ws.minhaprata.model.enums.OrderStatus;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Order;
 import com.rafaeldsal.ws.minhaprata.model.jpa.OrderHistory;
 import com.rafaeldsal.ws.minhaprata.model.jpa.OrderItem;
-import com.rafaeldsal.ws.minhaprata.model.enums.OrderStatus;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderHistoryRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderItemRepository;
@@ -21,7 +21,7 @@ import com.rafaeldsal.ws.minhaprata.repository.jpa.UserRepository;
 import com.rafaeldsal.ws.minhaprata.service.OrderService;
 import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,25 +34,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-  @Autowired
-  private UserRepository userRepository;
+  private final UserRepository userRepository;
 
-  @Autowired
-  private OrderRepository orderRepository;
+  private final OrderRepository orderRepository;
 
-  @Autowired
-  private OrderItemRepository orderItemRepository;
+  private final OrderItemRepository orderItemRepository;
 
-  @Autowired
-  private ProductRepository productRepository;
+  private final ProductRepository productRepository;
 
-  @Autowired
-  private OrderItemMapper orderItemMapper;
+  private final OrderItemMapper orderItemMapper;
 
-  @Autowired
-  private OrderHistoryRepository orderHistoryRepository;
+  private final OrderHistoryRepository orderHistoryRepository;
 
   @Override
   public Order findById(Long id) {

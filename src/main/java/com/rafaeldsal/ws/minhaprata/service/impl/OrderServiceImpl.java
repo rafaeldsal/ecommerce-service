@@ -13,6 +13,7 @@ import com.rafaeldsal.ws.minhaprata.model.jpa.Order;
 import com.rafaeldsal.ws.minhaprata.model.jpa.OrderHistory;
 import com.rafaeldsal.ws.minhaprata.model.jpa.OrderItem;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
+import com.rafaeldsal.ws.minhaprata.model.redis.PendingOrder;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderHistoryRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderItemRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderRepository;
@@ -26,9 +27,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +52,8 @@ public class OrderServiceImpl implements OrderService {
   private final OrderItemMapper orderItemMapper;
 
   private final OrderHistoryRepository orderHistoryRepository;
+
+  private final RedisTemplate<String, PendingOrder> redisTemplate;
 
   @Override
   public Order findById(Long id) {
@@ -78,30 +84,41 @@ public class OrderServiceImpl implements OrderService {
     var user = userRepository.findById(dto.userId())
         .orElseThrow(() -> new NotFoundException("Usuário não localizado"));
 
-    List<OrderItem> orderItems = new ArrayList<>();
-
-    for (OrderItemDto itemDto : dto.orderItems()) {
-      OrderItem item = orderItemMapper.toEntity(itemDto);
-      orderItems.add(item);
-    }
-
-    BigDecimal totalPrice = calculateTotalPrice(orderItems);
-
     Order order = Order.builder()
         .user(user)
-        .totalPrice(totalPrice)
         .status(OrderStatus.PENDING)
         .orderItems(new ArrayList<>())
         .dtOrder(LocalDateTime.now())
         .dtUpdated(LocalDateTime.now())
         .build();
 
-    for (OrderItem item : orderItems) {
-      item.setOrder(order);
+    BigDecimal totalPrice = BigDecimal.ZERO;
+
+    for (OrderItemDto itemDto : dto.orderItems()) {
+      Product product = productRepository.findById(itemDto.productId())
+          .orElseThrow(() -> new NotFoundException("Produto não encontrado"));
+
+      product.decreaseStockOrFail(itemDto.quantity());
+      // Persiste o produto após alteração de estoque para garantir sincronização imediata
+      productRepository.save(product);
+
+      OrderItem orderItem = orderItemMapper.toEntity(order, itemDto, product);
+      order.getOrderItems().add(orderItem);
+
+      totalPrice = totalPrice.add(product.getPrice().multiply(BigDecimal.valueOf(itemDto.quantity())));
     }
 
-    order.setOrderItems(orderItems);
+    order.setTotalPrice(totalPrice);
     orderRepository.save(order);
+
+    PendingOrder pendingOrder = PendingOrder.builder()
+        .orderId(order.getId().toString())
+        .email(user.getEmail())
+        .status(order.getStatus())
+        .createdAt(LocalDateTime.now())
+        .build();
+
+    redisTemplate.opsForValue().set("order:" + order.getId(), pendingOrder, Duration.ofSeconds(60));
 
     OrderHistory orderHistory = OrderHistoryMapper.toEntity(order, user, "Pedido criado com sucesso");
     orderHistoryRepository.save(orderHistory);
@@ -112,60 +129,62 @@ public class OrderServiceImpl implements OrderService {
   @Override
   @Transactional
   public OrderResponseDto updateCartItems(OrderDto dto, Long id) {
-
-    var user = userRepository.findById(dto.userId())
-        .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
-
-    var order = orderRepository.findById(id)
-        .orElseThrow(() -> new NotFoundException("Pedido não encontrado."));
-
-    validateOrderUpdate(order, dto.userId());
-
-    List<OrderItem> updatedOrderItems = dto.orderItems().stream()
-        .map(itemDto -> getOrCreateOrderItem(itemDto, order))
-        .peek(item -> item.setOrder(order))
-        .toList();
-
-    BigDecimal totalPrice = calculateTotalPrice(updatedOrderItems);
-
-    orderItemRepository.deleteAllByOrderId(order.getId());
-    order.setOrderItems(updatedOrderItems);
-    order.setTotalPrice(totalPrice);
-    order.setUser(user);
-    order.setDtUpdated(LocalDateTime.now());
-
-    orderRepository.save(order);
-
-    return OrderMapper.entityToResponseDto(order);
+    return null;
+//
+//    var user = userRepository.findById(dto.userId())
+//        .orElseThrow(() -> new NotFoundException("Usuário não encontrado."));
+//
+//    var order = orderRepository.findById(id)
+//        .orElseThrow(() -> new NotFoundException("Pedido não encontrado."));
+//
+//    validateOrderUpdate(order, dto.userId());
+//
+//    List<OrderItem> updatedOrderItems = dto.orderItems().stream()
+//        .map(itemDto -> getOrCreateOrderItem(itemDto, order))
+//        .peek(item -> item.setOrder(order))
+//        .toList();
+//
+//    BigDecimal totalPrice = calculateTotalPrice(updatedOrderItems);
+//
+//    orderItemRepository.deleteAllByOrderId(order.getId());
+//    order.setOrderItems(updatedOrderItems);
+//    order.setTotalPrice(totalPrice);
+//    order.setUser(user);
+//    order.setDtUpdated(LocalDateTime.now());
+//
+//    orderRepository.save(order);
+//
+//    return OrderMapper.entityToResponseDto(order);
   }
 
   @Override
   @Transactional
   public OrderResponseDto updateOrderStatus(OrderStatus orderStatus, Long orderId) {
-
-    Order order = orderRepository.findById(orderId)
-        .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
-
-    if (order.getStatus().equals(orderStatus)) {
-      throw new BusinessException("Pedido já se encontra nesse status " + order.getStatus());
-    }
-
-    if (OrderStatus.PAID.equals(order.getStatus()) && OrderStatus.CANCELLED.equals(orderStatus)) {
-      throw new BusinessException("Pedido não pode ser cancelado.");
-    }
-
-    order.setStatus(orderStatus);
-    orderRepository.save(order);
-
-    List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
-
-    if (OrderStatus.CANCELLED.equals(orderStatus)) {
-      updateStock(orderItems, false);
-    } else if (OrderStatus.PAID.equals(orderStatus)) {
-      updateStock(orderItems, true);
-    }
-
-    return OrderMapper.entityToResponseDto(order);
+//
+//    Order order = orderRepository.findById(orderId)
+//        .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+//
+//    if (order.getStatus().equals(orderStatus)) {
+//      throw new BusinessException("Pedido já se encontra nesse status " + order.getStatus());
+//    }
+//
+//    if (OrderStatus.PAID.equals(order.getStatus()) && OrderStatus.CANCELLED.equals(orderStatus)) {
+//      throw new BusinessException("Pedido não pode ser cancelado.");
+//    }
+//
+//    order.setStatus(orderStatus);
+//    orderRepository.save(order);
+//
+//    List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
+//
+//    if (OrderStatus.CANCELLED.equals(orderStatus)) {
+//      updateStock(orderItems, false);
+//    } else if (OrderStatus.PAID.equals(orderStatus)) {
+//      updateStock(orderItems, true);
+//    }
+//
+//    return OrderMapper.entityToResponseDto(order);
+    return null;
   }
 
   private void updateStock(List<OrderItem> items, boolean increment) {
@@ -178,20 +197,19 @@ public class OrderServiceImpl implements OrderService {
     }
   }
 
-
   private BigDecimal calculateTotalPrice(List<OrderItem> orderItems) {
     return orderItems.stream()
         .map(item -> item.getPriceAtPurchase().multiply(BigDecimal.valueOf(item.getQuantity())))
         .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 
-  private OrderItem getOrCreateOrderItem(OrderItemDto itemDto, Order order) {
-    var orderItem = orderItemRepository.findByProductIdAndOrderId(itemDto.productId(), order.getId());
-
-    return orderItem
-        .map(existing -> orderItemMapper.updateEntity(existing, itemDto))
-        .orElseGet(() -> orderItemMapper.toEntity(itemDto));
-  }
+//  private OrderItem getOrCreateOrderItem(OrderItemDto itemDto, Order order) {
+//    var orderItem = orderItemRepository.findByProductIdAndOrderId(itemDto.productId(), order.getId());
+//
+//    return orderItem
+//        .map(existing -> orderItemMapper.updateEntity(existing, itemDto))
+//        .orElseGet(() -> orderItemMapper.toEntity(itemDto));
+//  }
 
   private void validateOrderUpdate(Order order, Long userId) {
     if (!order.getUser().getId().equals(userId)) {
@@ -202,4 +220,5 @@ public class OrderServiceImpl implements OrderService {
       throw new BusinessException("Pedido não pode ser alterado. Status atual: " + order.getStatus());
     }
   }
+
 }

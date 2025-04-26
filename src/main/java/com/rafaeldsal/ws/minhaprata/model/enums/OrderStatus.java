@@ -7,6 +7,7 @@ public enum OrderStatus {
   SHIPPED("shipped"),
   DELIVERED("delivered"),
   CANCELLED("canceled"),
+  EXPIRED("expired"),
   PAYMENT_FAILURE("payment_failure");
 
   private String status;

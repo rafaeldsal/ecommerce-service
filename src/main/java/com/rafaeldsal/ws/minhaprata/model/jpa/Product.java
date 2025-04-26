@@ -1,5 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.model.jpa;
 
+import com.rafaeldsal.ws.minhaprata.exception.BusinessException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -57,5 +58,17 @@ public class Product implements Serializable {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
   private Category category;
+
+  public void decreaseStockOrFail(long quantity) {
+    if (quantity <= 0) {
+      throw new BusinessException("Quantidade inválida para reduzir estoque");
+    }
+
+    if (this.stockQuantity < quantity) {
+      throw new BusinessException("Estoque insuficiente para o produto " + this.getName());
+    }
+
+    this.stockQuantity -= quantity;
+  }
 
 }

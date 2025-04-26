@@ -1,20 +1,20 @@
 package com.rafaeldsal.ws.minhaprata.integration.impl;
 
 import com.rafaeldsal.ws.minhaprata.integration.MailIntegration;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class MailIntegrationImpl implements MailIntegration {
 
-  @Value("${webservices.minhaprata.default.sender}")
+  @Value("${spring.mail.from}")
   private String sender;
 
-  @Autowired
-  private JavaMailSender javaMailSender;
+  private final JavaMailSender javaMailSender;
 
   @Override
   public void send(String mailTo, String message, String subject) {

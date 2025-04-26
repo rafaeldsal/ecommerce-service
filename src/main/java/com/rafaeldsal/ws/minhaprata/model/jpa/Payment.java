@@ -43,7 +43,7 @@ public class Payment implements Serializable {
   private BigDecimal amount;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "order_id")
+  @JoinColumn(name = "order_id", nullable = false)
   private Order order;
 
 }

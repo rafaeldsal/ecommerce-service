@@ -30,9 +30,8 @@ import java.util.Collections;
 public class UserCredentials implements UserDetails {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "user_credentials_id", nullable = false, unique = true)
-  private Long id;
+  private String id;
 
   private String username;
 

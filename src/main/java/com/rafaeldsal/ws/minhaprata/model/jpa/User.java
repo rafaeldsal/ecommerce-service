@@ -32,9 +32,8 @@ import java.util.List;
 public class User implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "user_id", unique = true, nullable = false, updatable = false)
-  private Long id;
+  private String id;
 
   @Column(nullable = false)
   private String name;

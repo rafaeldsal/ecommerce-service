@@ -1,7 +1,7 @@
 package com.rafaeldsal.ws.minhaprata.service;
 
-import com.rafaeldsal.ws.minhaprata.dto.UserDto;
-import com.rafaeldsal.ws.minhaprata.dto.UserResponseDto;
+import com.rafaeldsal.ws.minhaprata.dto.user.UserDto;
+import com.rafaeldsal.ws.minhaprata.dto.user.UserResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.integration.MailIntegration;
@@ -11,6 +11,7 @@ import com.rafaeldsal.ws.minhaprata.model.jpa.UserCredentials;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.UserDetailsRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.UserRepository;
 import com.rafaeldsal.ws.minhaprata.service.impl.UserServiceImpl;
+import com.rafaeldsal.ws.minhaprata.utils.IdGenerator;
 import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-  private static final long ID = 1L;
+  private static final String ID = IdGenerator.UUIDGenerator("user");
   public static final PageRequest PAGE_REQUEST = PageRequest.of(0, 10, Sort.by(SortUtils.getSortDirection("ASC"), "name"));
 
   @Mock

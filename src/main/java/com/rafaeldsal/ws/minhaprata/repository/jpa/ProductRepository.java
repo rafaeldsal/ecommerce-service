@@ -13,11 +13,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, String> {
 
   Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("SELECT p FROM Product p WHERE p.id IN :ids")
-  List<Product> findAllByForUpdate(@Param("ids") List<Long> ids);
+  List<Product> findAllByForUpdate(@Param("ids") List<String> ids);
 }

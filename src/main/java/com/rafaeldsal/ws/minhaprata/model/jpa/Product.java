@@ -30,9 +30,8 @@ import java.time.LocalDateTime;
 public class Product implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "product_id", nullable = false, unique = true, updatable = false)
-  private Long id;
+  private String id;
 
   @Column(nullable = false)
   private String name;

@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
+public interface OrderItemRepository extends JpaRepository<OrderItem, String> {
 
-  Optional<OrderItem> findByProductIdAndOrderId(Long productId, Long orderId);
+  Optional<OrderItem> findByProductIdAndOrderId(String productId, String orderId);
 
-  List<OrderItem> findAllByOrderId(Long orderId);
+  List<OrderItem> findAllByOrderId(String orderId);
 
-  void deleteAllByOrderId(Long orderId);
+  void deleteAllByOrderId(String orderId);
   
 }

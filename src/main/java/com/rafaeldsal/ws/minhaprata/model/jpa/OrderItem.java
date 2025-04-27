@@ -28,9 +28,8 @@ import java.math.BigDecimal;
 public class OrderItem implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "order_item_id", unique = true, nullable = false, updatable = false)
-  private Long id;
+  private String id;
 
   @Column(nullable = false)
   private Integer quantity;

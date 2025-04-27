@@ -1,9 +1,9 @@
 package com.rafaeldsal.ws.minhaprata.service.impl;
 
-import com.rafaeldsal.ws.minhaprata.dto.CategoryDto;
+import com.rafaeldsal.ws.minhaprata.dto.category.CategoryDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
-import com.rafaeldsal.ws.minhaprata.mapper.CategoryMapper;
+import com.rafaeldsal.ws.minhaprata.mapper.category.CategoryMapper;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.CategoryRepository;
 import com.rafaeldsal.ws.minhaprata.service.CategoryService;
@@ -26,7 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   @Override
-  public Category findById(Long id) {
+  public Category findById(String id) {
     return getCategory(id);
   }
 
@@ -37,23 +37,23 @@ public class CategoryServiceImpl implements CategoryService {
       throw new BadRequestException("Id deve ser nulo");
     }
 
-    return categoryRepository.save(CategoryMapper.fromDtoTCategory(category));
+    return categoryRepository.save(CategoryMapper.fromDtoCategory(category));
   }
 
   @Override
-  public Category update(Long id, CategoryDto category) {
+  public Category update(String id, CategoryDto category) {
     var categoryExisting = getCategory(id);
     CategoryMapper.updateEntityFromDto(category, categoryExisting);
     return categoryRepository.save(categoryExisting);
   }
 
   @Override
-  public void delete(Long id) {
+  public void delete(String id) {
     getCategory(id);
     categoryRepository.deleteById(id);
   }
 
-  private Category getCategory(Long id) {
+  private Category getCategory(String id) {
     Optional<Category> optionalCategory = categoryRepository.findById(id);
 
     if (optionalCategory.isEmpty()) {

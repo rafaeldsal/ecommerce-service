@@ -1,7 +1,7 @@
 package com.rafaeldsal.ws.minhaprata.controller;
 
-import com.rafaeldsal.ws.minhaprata.dto.ProductDto;
-import com.rafaeldsal.ws.minhaprata.dto.ProductResponseDto;
+import com.rafaeldsal.ws.minhaprata.dto.product.ProductRequestDto;
+import com.rafaeldsal.ws.minhaprata.dto.product.ProductResponseDto;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
 import com.rafaeldsal.ws.minhaprata.service.ProductService;
 import jakarta.validation.Valid;
@@ -37,27 +37,27 @@ public class ProductController {
     return ResponseEntity.ok(productResponseDtos);
   }
 
-  @GetMapping("{id}")
-  public ResponseEntity<ProductResponseDto> findById(@PathVariable("id") Long id) {
-    return ResponseEntity.status(HttpStatus.OK).body(productService.findById(id));
+  @GetMapping("{productId}")
+  public ResponseEntity<ProductResponseDto> findById(@PathVariable("productId") String productId) {
+    return ResponseEntity.status(HttpStatus.OK).body(productService.findById(productId));
   }
 
   @PreAuthorize("hasRole('ADMIN')")
   @PostMapping
-  public ResponseEntity<Product> create(@Valid @RequestBody ProductDto product) {
+  public ResponseEntity<Product> create(@Valid @RequestBody ProductRequestDto product) {
     return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(product));
   }
 
   @PreAuthorize("hasRole('ADMIN')")
-  @PutMapping("{id}")
-  public ResponseEntity<ProductResponseDto> update(@RequestBody ProductDto product, @PathVariable("id") Long id) {
-    return ResponseEntity.status(HttpStatus.OK).body(productService.update(id, product));
+  @PutMapping("{productId}")
+  public ResponseEntity<ProductResponseDto> update(@RequestBody ProductRequestDto product, @PathVariable("productId") String productId) {
+    return ResponseEntity.status(HttpStatus.OK).body(productService.update(productId, product));
   }
 
   @PreAuthorize("hasRole('ADMIN')")
-  @DeleteMapping("{id}")
-  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-    productService.delete(id);
+  @DeleteMapping("{productId}")
+  public ResponseEntity<Void> delete(@PathVariable("productId") String productId) {
+    productService.delete(productId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 

@@ -1,13 +1,14 @@
 package com.rafaeldsal.ws.minhaprata.service.impl;
 
-import com.rafaeldsal.ws.minhaprata.dto.OrderDto;
-import com.rafaeldsal.ws.minhaprata.dto.OrderItemDto;
-import com.rafaeldsal.ws.minhaprata.dto.OrderResponseDto;
+import com.rafaeldsal.ws.minhaprata.configuration.security.RequireAuthentication;
+import com.rafaeldsal.ws.minhaprata.dto.orderItem.OrderItemDto;
+import com.rafaeldsal.ws.minhaprata.dto.order.OrderDto;
+import com.rafaeldsal.ws.minhaprata.dto.order.OrderResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BusinessException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
-import com.rafaeldsal.ws.minhaprata.mapper.OrderHistoryMapper;
-import com.rafaeldsal.ws.minhaprata.mapper.OrderItemMapper;
-import com.rafaeldsal.ws.minhaprata.mapper.OrderMapper;
+import com.rafaeldsal.ws.minhaprata.mapper.orderHistory.OrderHistoryMapper;
+import com.rafaeldsal.ws.minhaprata.mapper.orderItem.OrderItemMapper;
+import com.rafaeldsal.ws.minhaprata.mapper.order.OrderMapper;
 import com.rafaeldsal.ws.minhaprata.model.enums.OrderStatus;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Order;
 import com.rafaeldsal.ws.minhaprata.model.jpa.OrderHistory;
@@ -20,6 +21,8 @@ import com.rafaeldsal.ws.minhaprata.repository.jpa.ProductRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.UserRepository;
 import com.rafaeldsal.ws.minhaprata.service.OrderHistoryService;
 import com.rafaeldsal.ws.minhaprata.service.OrderService;
+import com.rafaeldsal.ws.minhaprata.utils.DateTimeUtils;
+import com.rafaeldsal.ws.minhaprata.utils.IdGenerator;
 import com.rafaeldsal.ws.minhaprata.utils.SortUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +37,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -57,16 +59,16 @@ public class OrderServiceImpl implements OrderService {
 
   private final OrderHistoryService orderHistoryService;
 
-  private final RedisTemplate<String, PendingOrder> redisTemplate;
+  private final RedisTemplate redisTemplate;
 
   @Override
-  public OrderResponseDto findById(Long orderId) {
+  public OrderResponseDto findById(String orderId) {
     Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
     return OrderMapper.entityToResponseDto(order);
   }
 
   @Override
-  public Page<OrderResponseDto> findAll(int page, int size, String sort, Long userId, OrderStatus status) {
+  public Page<OrderResponseDto> findAll(int page, int size, String sort, String userId, OrderStatus status) {
     Sort sortRequest = Sort.by(SortUtils.getSortDirection(sort));
     Pageable pageable = PageRequest.of(page, size, sortRequest);
 
@@ -88,10 +90,18 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional
+  @RequireAuthentication
   public OrderResponseDto create(OrderDto dto) {
-    var user = userRepository.findById(dto.userId()).orElseThrow(() -> new NotFoundException("Usuário não localizado"));
+    var user = userRepository.findById(dto.userId())
+        .orElseThrow(() -> new NotFoundException("Usuário não localizado"));
 
-    Order order = Order.builder().user(user).status(OrderStatus.PENDING).orderItems(new ArrayList<>()).dtOrder(LocalDateTime.now()).dtUpdated(LocalDateTime.now()).build();
+    Order order = Order.builder()
+        .user(user)
+        .status(OrderStatus.PENDING)
+        .orderItems(new ArrayList<>())
+        .dtOrder(DateTimeUtils.now())
+        .dtUpdated(DateTimeUtils.now())
+        .build();
 
     BigDecimal totalPrice = BigDecimal.ZERO;
 
@@ -109,9 +119,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     order.setTotalPrice(totalPrice);
+    order.setId(IdGenerator.UUIDGenerator("order"));
     orderRepository.save(order);
 
-    PendingOrder pendingOrder = PendingOrder.builder().orderId(order.getId().toString()).email(user.getEmail()).status(order.getStatus()).createdAt(LocalDateTime.now()).build();
+    PendingOrder pendingOrder = PendingOrder.builder()
+        .orderId(order.getId())
+        .email(user.getEmail())
+        .status(order.getStatus())
+        .userId(user.getId())
+        .createdAt(DateTimeUtils.now()).build();
 
     redisTemplate.opsForValue().set("order:" + order.getId(), pendingOrder, Duration.ofSeconds(60));
 
@@ -123,9 +139,10 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional
-  public OrderResponseDto update(OrderStatus orderStatus, Long orderId) {
+  public OrderResponseDto update(OrderStatus orderStatus, String orderId) {
 
-    Order order = orderRepository.findById(orderId).orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));
 
     if (order.getStatus().equals(orderStatus)) {
       throw new BusinessException("Pedido já se encontra nesse status " + order.getStatus());
@@ -151,7 +168,7 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional
-  public void expireOrder(Long orderId) {
+  public void expireOrder(String orderId) {
     Order order = orderRepository.findByIdWithOrderItems(orderId).orElseThrow(() -> new NotFoundException("Pedido não localizado"));
 
     if (order.getStatus() != OrderStatus.PENDING) {
@@ -159,12 +176,12 @@ public class OrderServiceImpl implements OrderService {
       return;
     }
 
-    List<Long> productsId = order.getOrderItems().stream()
+    List<String> productsId = order.getOrderItems().stream()
         .map(
             orderItem -> orderItem.getProduct().getId())
         .toList();
 
-    Map<Long, OrderItem> orderItemMap = order.getOrderItems().stream()
+    Map<String, OrderItem> orderItemMap = order.getOrderItems().stream()
         .collect(Collectors.toMap(
             item -> item.getProduct().getId(),
             item -> item)
@@ -186,7 +203,7 @@ public class OrderServiceImpl implements OrderService {
     productRepository.saveAllAndFlush(products);
 
     order.setStatus(OrderStatus.EXPIRED);
-    order.setDtUpdated(LocalDateTime.now());
+    order.setDtUpdated(DateTimeUtils.now());
     orderRepository.save(order);
 
     OrderHistory orderHistory = OrderHistoryMapper.toEntity(order, order.getUser(), "Pedido expirado automaticamente");
@@ -194,12 +211,14 @@ public class OrderServiceImpl implements OrderService {
   }
 
   private void updateStock(List<OrderItem> items, boolean increment) {
+    List<Product> updatedProducts = new ArrayList<>();
     for (OrderItem item : items) {
       Product product = item.getProduct();
       product.setStockQuantity(increment ?
           product.getStockQuantity() + item.getQuantity()
           : product.getStockQuantity() - item.getQuantity());
-      productRepository.save(product);
+      updatedProducts.add(product);
     }
+    productRepository.saveAll(updatedProducts);
   }
 }

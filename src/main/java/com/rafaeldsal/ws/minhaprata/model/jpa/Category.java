@@ -20,9 +20,8 @@ import lombok.*;
 public class Category implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "category_id", unique = true, nullable = false, updatable = false)
-  private Long id;
+  private String id;
 
   @Column(nullable = false)
   private String name;

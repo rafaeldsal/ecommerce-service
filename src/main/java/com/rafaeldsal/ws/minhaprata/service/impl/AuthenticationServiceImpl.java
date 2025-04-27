@@ -1,7 +1,7 @@
 package com.rafaeldsal.ws.minhaprata.service.impl;
 
-import com.rafaeldsal.ws.minhaprata.dto.LoginDto;
-import com.rafaeldsal.ws.minhaprata.dto.TokenDto;
+import com.rafaeldsal.ws.minhaprata.dto.auth.LoginDto;
+import com.rafaeldsal.ws.minhaprata.dto.auth.TokenDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.service.AuthenticationService;
 import com.rafaeldsal.ws.minhaprata.service.TokenService;

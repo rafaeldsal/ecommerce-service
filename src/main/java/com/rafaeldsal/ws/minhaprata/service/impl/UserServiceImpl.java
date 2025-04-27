@@ -1,12 +1,12 @@
 package com.rafaeldsal.ws.minhaprata.service.impl;
 
-import com.rafaeldsal.ws.minhaprata.dto.UserDto;
-import com.rafaeldsal.ws.minhaprata.dto.UserResponseDto;
+import com.rafaeldsal.ws.minhaprata.dto.user.UserDto;
+import com.rafaeldsal.ws.minhaprata.dto.user.UserResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.integration.MailIntegration;
-import com.rafaeldsal.ws.minhaprata.mapper.UserCredentialsMapper;
-import com.rafaeldsal.ws.minhaprata.mapper.UserMapper;
+import com.rafaeldsal.ws.minhaprata.mapper.user.UserCredentialsMapper;
+import com.rafaeldsal.ws.minhaprata.mapper.user.UserMapper;
 import com.rafaeldsal.ws.minhaprata.model.jpa.User;
 import com.rafaeldsal.ws.minhaprata.model.jpa.UserCredentials;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.UserDetailsRepository;
@@ -51,8 +51,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public UserResponseDto findByID(Long id) {
-    var user = getUser(id);
+  public UserResponseDto findByID(String userId) {
+    var user = getUser(userId);
     return UserMapper.fromEntityToResponseDto(user);
   }
 
@@ -84,8 +84,8 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  public UserResponseDto update(Long id, UserDto dto) {
-    User existingUser = getUser(id);
+  public UserResponseDto update(String userId, UserDto dto) {
+    User existingUser = getUser(userId);
 
     if (!existingUser.getCpf().equals(dto.cpf())) {
       throw new BadRequestException("CPF não pode ser alterado");
@@ -97,7 +97,7 @@ public class UserServiceImpl implements UserService {
 
     if (dto.phoneNumber() != null &&
         !dto.phoneNumber().equals(existingUser.getPhoneNumber()) &&
-        userRepository.existsByPhoneNumberAndIdNot(dto.phoneNumber(), id)) {
+        userRepository.existsByPhoneNumberAndIdNot(dto.phoneNumber(), userId)) {
       throw new BadRequestException("Telefone já cadastrado");
     }
 
@@ -108,12 +108,12 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void delete(Long id) {
-    getUser(id);
-    userRepository.deleteById(id);
+  public void delete(String userId) {
+    getUser(userId);
+    userRepository.deleteById(userId);
   }
 
-  private User getUser(Long id) {
+  private User getUser(String id) {
     return userRepository.findById(id).orElseThrow(
         () -> new NotFoundException("Usuário não encontrado")
     );

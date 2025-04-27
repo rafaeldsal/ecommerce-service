@@ -31,9 +31,8 @@ import java.time.LocalDateTime;
 public class OrderHistory implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "history_id", unique = true, nullable = false, updatable = false)
-  private Long id;
+  private String id;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)

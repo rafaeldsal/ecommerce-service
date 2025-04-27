@@ -33,7 +33,7 @@ public class TokenServiceImpl implements TokenService {
 
     return Jwts.builder()
         .issuer("API Minha Prata")
-        .subject(userCredentials.getId().toString())
+        .subject(userCredentials.getId())
         .issuedAt(today)
         .expiration(expirationDate)
         .signWith(getKey(), Jwts.SIG.HS256)
@@ -50,9 +50,9 @@ public class TokenServiceImpl implements TokenService {
   }
 
   @Override
-  public Long getUserId(String token) {
+  public String getUserId(String token) {
     Jws<Claims> claimsJws = getClaimsJws(token);
-    return Long.parseLong(claimsJws.getPayload().getSubject());
+    return claimsJws.getPayload().getSubject();
   }
 
   private Jws<Claims> getClaimsJws(String token) {

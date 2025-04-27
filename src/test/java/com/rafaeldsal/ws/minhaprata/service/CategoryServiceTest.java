@@ -1,12 +1,13 @@
 package com.rafaeldsal.ws.minhaprata.service;
 
-import com.rafaeldsal.ws.minhaprata.dto.CategoryDto;
+import com.rafaeldsal.ws.minhaprata.dto.category.CategoryDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
-import com.rafaeldsal.ws.minhaprata.mapper.CategoryMapper;
+import com.rafaeldsal.ws.minhaprata.mapper.category.CategoryMapper;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.CategoryRepository;
 import com.rafaeldsal.ws.minhaprata.service.impl.CategoryServiceImpl;
+import com.rafaeldsal.ws.minhaprata.utils.IdGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest {
 
-  private static final long ID = 1L;
+  private static final String ID = IdGenerator.UUIDGenerator("cat");
 
   @Mock
   private CategoryRepository categoryRepository;
@@ -37,8 +38,8 @@ public class CategoryServiceTest {
   private List<Category> mockCategories() {
 
     return List.of(
-        new Category(1L, "Anéis", "xx"),
-        new Category(2L, "Colares", "xx")
+        new Category(IdGenerator.UUIDGenerator("cat"), "Anéis", "xx"),
+        new Category(IdGenerator.UUIDGenerator("cat"), "Colares", "xx")
     );
   }
 

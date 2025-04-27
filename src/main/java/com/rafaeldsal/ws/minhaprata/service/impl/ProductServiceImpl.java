@@ -1,10 +1,10 @@
 package com.rafaeldsal.ws.minhaprata.service.impl;
 
-import com.rafaeldsal.ws.minhaprata.dto.ProductDto;
-import com.rafaeldsal.ws.minhaprata.dto.ProductResponseDto;
+import com.rafaeldsal.ws.minhaprata.dto.product.ProductRequestDto;
+import com.rafaeldsal.ws.minhaprata.dto.product.ProductResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
-import com.rafaeldsal.ws.minhaprata.mapper.ProductMapper;
+import com.rafaeldsal.ws.minhaprata.mapper.product.ProductMapper;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.CategoryRepository;
@@ -45,12 +45,12 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public ProductResponseDto findById(Long id) {
-    return ProductMapper.fromEntityToResponseDto(getProduct(id));
+  public ProductResponseDto findById(String productId) {
+    return ProductMapper.fromEntityToResponseDto(getProduct(productId));
   }
 
   @Override
-  public Product create(ProductDto dto) {
+  public Product create(ProductRequestDto dto) {
 
     if (Objects.nonNull(dto.id())) {
       throw new BadRequestException("productId não pode ser informado");
@@ -64,9 +64,9 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public ProductResponseDto update(Long id, ProductDto product) {
+  public ProductResponseDto update(String productId, ProductRequestDto product) {
 
-    var productExisting = getProduct(id);
+    var productExisting = getProduct(productId);
     Category category = null;
 
     if (product.categoryId() != null) {
@@ -81,19 +81,19 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public void delete(Long id) {
-    getProduct(id);
-    productRepository.deleteById(id);
+  public void delete(String productId) {
+    getProduct(productId);
+    productRepository.deleteById(productId);
   }
 
-  private Product getProduct(Long id) {
-    return productRepository.findById(id).orElseThrow(
+  private Product getProduct(String productId) {
+    return productRepository.findById(productId).orElseThrow(
         () -> new NotFoundException("Produto não encontrado")
     );
   }
 
-  private Category getCategory(Long id) {
-    return categoryRepository.findById(id).orElseThrow(
+  private Category getCategory(String categoryId) {
+    return categoryRepository.findById(categoryId).orElseThrow(
         () -> new NotFoundException("categoryId não encontrado")
     );
   }

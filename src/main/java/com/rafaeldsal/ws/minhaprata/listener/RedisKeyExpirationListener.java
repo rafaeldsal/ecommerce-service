@@ -23,7 +23,7 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
     String key = new String(message.getBody());
 
     if (key.startsWith("order:")) {
-      Long orderId = Long.valueOf(key.replace("order:", ""));
+      String orderId = key.replace("order:", "");
       log.info("Processando expiração do pedido {}", orderId);
       orderService.expireOrder(orderId);
     }

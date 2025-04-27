@@ -10,6 +10,7 @@ import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderHistoryRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.ProductRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.UserRepository;
+import com.rafaeldsal.ws.minhaprata.utils.IdGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -54,21 +55,27 @@ class RedisKeyExpirationListenerTest {
 
   @Test
   void testOnMessage_shouldExpireOrderAndRestoreStock() {
+    var userId = IdGenerator.UUIDGenerator("user");
+    var categoryId = IdGenerator.UUIDGenerator("cat");
+    var orderId = IdGenerator.UUIDGenerator("order");
+    var orderItemId = IdGenerator.UUIDGenerator("orderItem");
+    var productId = IdGenerator.UUIDGenerator("prod");
+
     Product product = Product.builder()
-        .id(234L)
+        .id(productId)
         .name("Produto exemplo")
         .price(BigDecimal.valueOf(175.00))
         .stockQuantity(100L)
         .build();
     OrderItem orderItem = OrderItem.builder()
-        .id(345L)
+        .id(orderItemId)
         .quantity(2)
         .priceAtPurchase(BigDecimal.valueOf(175.00))
         .product(product)
         .build();
 
     User user = User.builder()
-        .id(678L)
+        .id(userId)
         .name("Rafael Souza")
         .email("rafael@email.com")
         .cpf("12345678900")
@@ -80,15 +87,15 @@ class RedisKeyExpirationListenerTest {
         .build();
 
     Order order = Order.builder()
-        .id(123L)
+        .id(IdGenerator.UUIDGenerator("order"))
         .orderItems(List.of(orderItem))
         .status(OrderStatus.PENDING)
         .totalPrice(BigDecimal.valueOf(350.00))
         .user(user)
         .build();
 
-    Mockito.when(orderRepository.findById(123L)).thenReturn(Optional.of(order));
-    Mockito.when(productRepository.findById(234L)).thenReturn(Optional.of(product));
+    // Mockito.when(orderRepository.findById(orderId).thenReturn(order);
+    Mockito.when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
     String expiredKey = "order:123"; // A chave que expirou
     Message message = new DefaultMessage(expiredKey.getBytes(), new byte[0]);

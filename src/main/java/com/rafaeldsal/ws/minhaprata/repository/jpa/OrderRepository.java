@@ -12,15 +12,15 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, String> {
 
-  Page<Order> findAllByUserId(Long userId, Pageable pageable);
+  Page<Order> findAllByUserId(String userId, Pageable pageable);
 
   @Query("SELECT o FROM Order o JOIN FETCH o.orderItems WHERE o.id = :orderId")
-  Optional<Order> findByIdWithOrderItems(@Param("orderId") Long orderId);
+  Optional<Order> findByIdWithOrderItems(@Param("orderId") String orderId);
 
   @Query("SELECT o FROM Order o WHERE o.user.id = :userId AND o.status = :status")
-  Page<Order> findAllByUserIdAndStatus(@Param("userId") Long userId, @Param("status") OrderStatus status, Pageable pageable);
+  Page<Order> findAllByUserIdAndStatus(@Param("userId") String userId, @Param("status") OrderStatus status, Pageable pageable);
 
   @Query("SELECT o FROM Order o WHERE o.status = :status")
   Page<Order> findAllByStatus(@Param("status") OrderStatus status, Pageable pageable);

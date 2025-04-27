@@ -1,7 +1,7 @@
 package com.rafaeldsal.ws.minhaprata.controller;
 
-import com.rafaeldsal.ws.minhaprata.dto.UserDto;
-import com.rafaeldsal.ws.minhaprata.dto.UserResponseDto;
+import com.rafaeldsal.ws.minhaprata.dto.user.UserDto;
+import com.rafaeldsal.ws.minhaprata.dto.user.UserResponseDto;
 import com.rafaeldsal.ws.minhaprata.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,9 +37,9 @@ public class UserController {
   }
 
   @PreAuthorize("hasRole('ADMIN')")
-  @GetMapping("{id}")
-  public ResponseEntity<UserResponseDto> findById(@PathVariable("id") Long id) {
-    return ResponseEntity.status(HttpStatus.OK).body(userService.findByID(id));
+  @GetMapping("{userId}")
+  public ResponseEntity<UserResponseDto> findById(@PathVariable("userId") String userId) {
+    return ResponseEntity.status(HttpStatus.OK).body(userService.findByID(userId));
   }
 
   @PostMapping
@@ -47,14 +47,14 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.CREATED).body(userService.create(dto));
   }
 
-  @PutMapping("{id}")
-  public ResponseEntity<UserResponseDto> update(@PathVariable("id") Long id, @RequestBody UserDto dto) {
-    return ResponseEntity.status(HttpStatus.OK).body(userService.update(id, dto));
+  @PutMapping("{userId}")
+  public ResponseEntity<UserResponseDto> update(@PathVariable("userId") String userId, @RequestBody UserDto dto) {
+    return ResponseEntity.status(HttpStatus.OK).body(userService.update(userId, dto));
   }
 
-  @DeleteMapping("{id}")
-  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
-    userService.delete(id);
+  @DeleteMapping("{userId}")
+  public ResponseEntity<Void> delete(@PathVariable("userId") String userId) {
+    userService.delete(userId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
 }

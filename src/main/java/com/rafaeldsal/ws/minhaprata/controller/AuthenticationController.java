@@ -1,8 +1,8 @@
 package com.rafaeldsal.ws.minhaprata.controller;
 
-import com.rafaeldsal.ws.minhaprata.dto.LoginDto;
-import com.rafaeldsal.ws.minhaprata.dto.TokenDto;
-import com.rafaeldsal.ws.minhaprata.dto.UserDetailsDto;
+import com.rafaeldsal.ws.minhaprata.dto.auth.LoginDto;
+import com.rafaeldsal.ws.minhaprata.dto.auth.TokenDto;
+import com.rafaeldsal.ws.minhaprata.dto.user.UserDetailsDto;
 import com.rafaeldsal.ws.minhaprata.model.redis.UserRecoveryCode;
 import com.rafaeldsal.ws.minhaprata.service.AuthenticationService;
 import com.rafaeldsal.ws.minhaprata.service.CustomUserService;

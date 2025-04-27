@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rafaeldsal.ws.minhaprata.dto.CategoryDto;
+import com.rafaeldsal.ws.minhaprata.dto.category.CategoryDto;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
 import com.rafaeldsal.ws.minhaprata.service.CategoryService;
 
@@ -32,7 +32,7 @@ public class CategoryController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<Category> readAll(@PathVariable("id") Long id) {
+  public ResponseEntity<Category> readAll(@PathVariable("id") String id) {
     return ResponseEntity.status(HttpStatus.OK).body(categoryService.findById(id));
   }
 
@@ -42,12 +42,12 @@ public class CategoryController {
   }
 
   @PutMapping("{id}")
-  public ResponseEntity<Category> update(@PathVariable("id") Long id, @RequestBody CategoryDto dto) {
+  public ResponseEntity<Category> update(@PathVariable("id") String id, @RequestBody CategoryDto dto) {
     return ResponseEntity.status(HttpStatus.OK).body(categoryService.update(id, dto));
   }
 
   @DeleteMapping("{id}")
-  public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+  public ResponseEntity<Void> delete(@PathVariable("id") String id) {
     categoryService.delete(id);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }

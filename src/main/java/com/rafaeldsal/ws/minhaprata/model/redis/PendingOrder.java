@@ -19,7 +19,7 @@ public class PendingOrder implements Serializable {
 
   private String orderId;
   private String email;
-  private Long userId;
+  private String userId;
   private OrderStatus status;
   private LocalDateTime createdAt;
 }

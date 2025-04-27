@@ -37,9 +37,8 @@ import java.util.List;
 public class Order implements Serializable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "order_id", unique = true, nullable = false, updatable = false)
-  private Long id;
+  private String id;
 
   @Column(name = "dt_order", nullable = false)
   private LocalDateTime dtOrder = LocalDateTime.now();

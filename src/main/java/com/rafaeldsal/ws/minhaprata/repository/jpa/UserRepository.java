@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, String> {
 
   Page<User> findByNameContainingIgnoreCase(String name, Pageable pageable);
 
@@ -17,8 +17,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   Boolean existsByPhoneNumber(String phoneNumber);
 
-  Boolean existsByEmailAndIdNot(String email, Long id);
+  Boolean existsByEmailAndIdNot(String email, String userId);
 
-  Boolean existsByPhoneNumberAndIdNot(String phoneNumber, Long id);
+  Boolean existsByPhoneNumberAndIdNot(String phoneNumber, String userId);
 
 }

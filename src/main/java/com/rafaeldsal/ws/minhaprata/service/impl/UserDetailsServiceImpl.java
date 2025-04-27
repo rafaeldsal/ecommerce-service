@@ -1,6 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.service.impl;
 
-import com.rafaeldsal.ws.minhaprata.dto.UserDetailsDto;
+import com.rafaeldsal.ws.minhaprata.dto.user.UserDetailsDto;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.integration.MailIntegration;
 import com.rafaeldsal.ws.minhaprata.model.jpa.UserCredentials;

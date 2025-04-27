@@ -1,8 +1,8 @@
 package com.rafaeldsal.ws.minhaprata.service.impl;
 
-import com.rafaeldsal.ws.minhaprata.dto.OrderHistoryResponseDto;
+import com.rafaeldsal.ws.minhaprata.dto.orderHistory.OrderHistoryResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
-import com.rafaeldsal.ws.minhaprata.mapper.OrderHistoryMapper;
+import com.rafaeldsal.ws.minhaprata.mapper.orderHistory.OrderHistoryMapper;
 import com.rafaeldsal.ws.minhaprata.model.jpa.OrderHistory;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderHistoryRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderRepository;
@@ -28,7 +28,7 @@ public class OrderHistoryServiceImpl implements OrderHistoryService {
   }
 
   @Override
-  public Page<OrderHistoryResponseDto> findAllHistoryByOrderId(Integer page, Integer size, String sort, Long orderId) {
+  public Page<OrderHistoryResponseDto> findAllHistoryByOrderId(Integer page, Integer size, String sort, String orderId) {
 
     orderRepository.findById(orderId)
         .orElseThrow(() -> new NotFoundException("Pedido não encontrado"));

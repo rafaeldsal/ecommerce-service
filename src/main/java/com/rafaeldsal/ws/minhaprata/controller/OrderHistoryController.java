@@ -1,6 +1,6 @@
 package com.rafaeldsal.ws.minhaprata.controller;
 
-import com.rafaeldsal.ws.minhaprata.dto.OrderHistoryResponseDto;
+import com.rafaeldsal.ws.minhaprata.dto.orderHistory.OrderHistoryResponseDto;
 import com.rafaeldsal.ws.minhaprata.service.OrderHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,7 @@ public class OrderHistoryController {
   public ResponseEntity<Page<OrderHistoryResponseDto>> findAllByOrderId(@RequestParam(value = "page", defaultValue = "0") Integer page,
                                                                         @RequestParam(value = "size", defaultValue = "10") Integer size,
                                                                         @RequestParam(value = "sort", defaultValue = "ASC") String sort,
-                                                                        @PathVariable("id") Long orderId) {
+                                                                        @PathVariable("id") String orderId) {
     Page<OrderHistoryResponseDto> orderHistoryResponseDtos = orderHistoryService.findAllHistoryByOrderId(page, size, sort, orderId);
     return ResponseEntity.ok(orderHistoryResponseDtos);
   }

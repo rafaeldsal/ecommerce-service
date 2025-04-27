@@ -54,6 +54,12 @@ public class Product implements Serializable {
   @Column(name = "dt_updated", nullable = false)
   private LocalDateTime dtUpdated;
 
+  @Column(name = "product_key")
+  private String productKey;
+
+  @Column(nullable = false)
+  private String currency;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "category_id")
   private Category category;

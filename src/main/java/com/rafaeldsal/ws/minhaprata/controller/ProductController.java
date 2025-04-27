@@ -42,9 +42,9 @@ public class ProductController {
     return ResponseEntity.status(HttpStatus.OK).body(productService.findById(productId));
   }
 
-  @PreAuthorize("hasRole('ADMIN')")
+//  @PreAuthorize("hasRole('ADMIN')")
   @PostMapping
-  public ResponseEntity<Product> create(@Valid @RequestBody ProductRequestDto product) {
+  public ResponseEntity<ProductResponseDto> create(@Valid @RequestBody ProductRequestDto product) {
     return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(product));
   }
 
@@ -60,5 +60,4 @@ public class ProductController {
     productService.delete(productId);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
   }
-
 }

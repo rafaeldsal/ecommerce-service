@@ -11,18 +11,17 @@ import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
 import com.rafaeldsal.ws.minhaprata.utils.DateTimeUtils;
 import com.rafaeldsal.ws.minhaprata.utils.IdGenerator;
 
-import java.time.LocalDateTime;
-
 public class ProductMapper {
 
   public static Product fromDtoToEntity(ProductRequestDto dto, Category category) {
     return Product.builder()
-        .id(IdGenerator.UUIDGenerator("prod-"))
+        .id(IdGenerator.UUIDGenerator("prod"))
         .name(dto.name())
         .description(dto.description())
         .price(dto.price())
         .imgUrl(dto.imgUrl())
         .stockQuantity(dto.stockQuantity())
+        .currency(dto.currency())
         .dtCreated(dto.dtCreated() != null ? dto.dtCreated() : DateTimeUtils.now())
         .dtUpdated(dto.dtUpdated() != null ? dto.dtUpdated() : DateTimeUtils.now())
         .category(category)
@@ -61,14 +60,20 @@ public class ProductMapper {
         .build();
   }
 
-  public static ProductCreatedEventDto fromResponseDtoToEventDto(ProductResponseDto dto, ProductEventType eventType) {
-    if (dto == null) return null;
+  public static ProductCreatedEventDto fromEntityToEventDto(Product product, ProductEventType eventType) {
+    if (product == null) return null;
 
     return ProductCreatedEventDto.builder()
         .eventType(eventType)
         .timestamp(DateTimeUtils.timestamp())
         .data(ProductDataDto.builder()
-            .productId(dto.id())
+            .productId(product.getId())
+            .name(product.getName())
+            .stockQuantity(product.getStockQuantity())
+            .price(product.getPrice())
+            .description(product.getDescription())
+            .imageUrl(product.getImgUrl())
+            .currency(product.getCurrency())
             .build())
         .build();
   }

@@ -2,7 +2,6 @@ package com.rafaeldsal.ws.minhaprata.service;
 
 import com.rafaeldsal.ws.minhaprata.dto.product.ProductRequestDto;
 import com.rafaeldsal.ws.minhaprata.dto.product.ProductResponseDto;
-import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
 import org.springframework.data.domain.Page;
 
 public interface ProductService {
@@ -11,7 +10,7 @@ public interface ProductService {
 
   ProductResponseDto findById(String productId);
 
-  Product create(ProductRequestDto product);
+  ProductResponseDto create(ProductRequestDto product);
 
   ProductResponseDto update(String productId, ProductRequestDto product);
 

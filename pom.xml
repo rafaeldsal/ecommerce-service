@@ -11,7 +11,7 @@
 	<groupId>com.rafaeldsal.ws</groupId>
 	<artifactId>ws-minha-prata</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Minha Prata</name>
+	<name>ecommerce-service</name>
 	<description>API Rest de um E-commerce - Projeto realizado para materia na faculdade</description>
 	<url/>
 	<licenses>

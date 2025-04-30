@@ -10,6 +10,18 @@ CREATE TABLE IF NOT EXISTS `tbl_user` (
     `dt_updated` DATETIME NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS `tbl_address` (
+    `address_id` VARCHAR(255) NOT NULL PRIMARY KEY,
+    `street` VARCHAR(255),
+    `number` VARCHAR(100),
+    `complement` VARCHAR(255),
+    `neighborhood` VARCHAR(255),
+    `city` VARCHAR(255),
+    `state` VARCHAR(255),
+    `portal_code` VARCHAR(20),
+    `user_id` VARCHAR(255) NOT NULL UNIQUE
+);
+
 CREATE TABLE IF NOT EXISTS `tbl_user_credentials` (
     `user_credentials_id` VARCHAR(100) NOT NULL PRIMARY KEY,
     `username` CHAR(255) NOT NULL,
@@ -85,6 +97,9 @@ ALTER TABLE `tbl_product` ADD CONSTRAINT `unique_product_category` UNIQUE (`name
 -- FOREIGN KEYS
 ALTER TABLE `tbl_order_history`
     ADD CONSTRAINT `fk_order_history_order` FOREIGN KEY (`order_id`) REFERENCES `tbl_order`(`order_id`) ON DELETE CASCADE;
+
+ALTER TABLE `tbl_address`
+    ADD CONSTRAINT `fk_address_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user`(`user_id`) ON DELETE CASCADE;
 
 ALTER TABLE `tbl_order_history`
     ADD CONSTRAINT `fk_order_history_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user`(`user_id`);

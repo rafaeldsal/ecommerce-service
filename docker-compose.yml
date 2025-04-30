@@ -18,9 +18,21 @@ services:
     container_name: redis_container_minha_prata
     restart: always
     ports:
-      - "6380:6380"
+      - "6380:6379"
     volumes:
       - redis_data_container:/data/redis
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo_container_minha_prata
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: minha_prata
+      MONGO_INITDB_ROOT_PASSWORD: senha123
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo_data_container:/data/mongo
 
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `tbl_address` (
     `neighborhood` VARCHAR(255),
     `city` VARCHAR(255),
     `state` VARCHAR(255),
-    `portal_code` VARCHAR(20),
+    `postal_code` VARCHAR(20),
     `user_id` VARCHAR(255) NOT NULL UNIQUE
 );
 
@@ -28,6 +28,19 @@ CREATE TABLE IF NOT EXISTS `tbl_user_credentials` (
     `name` CHAR(255) NOT NULL,
     `password` CHAR(255) NOT NULL,
     `role` CHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `tbl_user_payment_info` (
+    user_payment_info_id VARCHAR(255) NOT NULL PRIMARY KEY,
+    card_number VARCHAR(255) NOT NULL UNIQUE,
+    card_expiration_year VARCHAR(50) NOT NULL,
+    card_expiration_month VARCHAR(50) NOT NULL,
+    card_security_code VARCHAR(50) NOT NULL,
+    price DECIMAL(19,2) NOT NULL,
+    installments INT NOT NULL,
+    dt_payment DATETIME NOT NULL,
+    user_id VARCHAR(255),
+    save_payment_method BOOLEAN NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `tbl_order` (
@@ -53,12 +66,10 @@ CREATE TABLE IF NOT EXISTS `tbl_product` (
     `name` VARCHAR(255) NOT NULL,
     `description` VARCHAR(255) NOT NULL,
     `price` DECIMAL(15,2) NOT NULL,
-    `currency` VARCHAR(15) NOT NULL,
     `stock_quantity` INT NOT NULL,
     `img_url` VARCHAR(255) NULL,
     `dt_created` DATETIME NOT NULL,
     `dt_updated` DATETIME NOT NULL,
-    `product_key` VARCHAR(255),
     `category_id` VARCHAR(100) NOT NULL
 );
 
@@ -72,6 +83,8 @@ CREATE TABLE IF NOT EXISTS `tbl_payment` (
     `payment_id` VARCHAR(100) NOT NULL PRIMARY KEY,
     `dt_payment` DATETIME NOT NULL,
     `payment_method` VARCHAR(90) NOT NULL,
+    `save_payment_method` BOOLEAN,
+    `currency` VARCHAR(20) NOT NULL,
     `amount` DECIMAL(15,2) NOT NULL,
     `order_id` VARCHAR(100) NOT NULL
 );
@@ -95,6 +108,9 @@ ALTER TABLE `tbl_user` ADD UNIQUE `users_phone_unique`(`phone_number`);
 ALTER TABLE `tbl_product` ADD CONSTRAINT `unique_product_category` UNIQUE (`name`, `category_id`);
 
 -- FOREIGN KEYS
+ALTER TABLE `tbl_user_payment_info`
+    ADD CONSTRAINT `fk_user_payment_info_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user`(`user_id`);
+
 ALTER TABLE `tbl_order_history`
     ADD CONSTRAINT `fk_order_history_order` FOREIGN KEY (`order_id`) REFERENCES `tbl_order`(`order_id`) ON DELETE CASCADE;
 

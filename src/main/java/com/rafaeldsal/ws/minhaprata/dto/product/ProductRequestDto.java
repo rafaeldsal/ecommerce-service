@@ -2,7 +2,6 @@ package com.rafaeldsal.ws.minhaprata.dto.product;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -29,9 +28,6 @@ public record ProductRequestDto(
     String imgUrl,
 
     Long stockQuantity,
-
-    @NotEmpty(message = "não pode ser nulo ou vazio")
-    String currency,
 
     LocalDateTime dtCreated,
 

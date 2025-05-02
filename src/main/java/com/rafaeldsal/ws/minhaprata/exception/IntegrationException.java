@@ -1,7 +1,17 @@
 package com.rafaeldsal.ws.minhaprata.exception;
 
+import org.springframework.http.HttpStatus;
+
 public class IntegrationException extends RuntimeException {
-  public IntegrationException(String message) {
+
+  private final HttpStatus status;
+
+  public IntegrationException(String message, HttpStatus status) {
     super(message);
+    this.status = status;
+  }
+
+  public HttpStatus getStatus() {
+    return this.status;
   }
 }

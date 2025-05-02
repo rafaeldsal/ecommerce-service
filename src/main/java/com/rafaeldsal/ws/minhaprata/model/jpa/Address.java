@@ -2,6 +2,7 @@ package com.rafaeldsal.ws.minhaprata.model.jpa;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -35,7 +36,7 @@ public class Address {
   @Column(name = "postal_code")
   private String postalCode;
 
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", unique = true, nullable = false)
   private User user;
 }

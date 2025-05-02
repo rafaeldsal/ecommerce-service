@@ -1,16 +1,12 @@
 package com.rafaeldsal.ws.minhaprata.service.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.rafaeldsal.ws.minhaprata.dto.product.ProductRequestDto;
 import com.rafaeldsal.ws.minhaprata.dto.product.ProductResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
-import com.rafaeldsal.ws.minhaprata.exception.ProductEventException;
 import com.rafaeldsal.ws.minhaprata.mapper.product.ProductMapper;
-import com.rafaeldsal.ws.minhaprata.model.enums.ProductEventType;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
-import com.rafaeldsal.ws.minhaprata.producer.product.ProductEventProducer;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.CategoryRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.ProductRepository;
 import com.rafaeldsal.ws.minhaprata.service.ProductService;
@@ -29,10 +25,7 @@ import java.util.Objects;
 public class ProductServiceImpl implements ProductService {
 
   private final ProductRepository productRepository;
-
   private final CategoryRepository categoryRepository;
-
-  private final ProductEventProducer productEventProducer;
 
   @Override
   public Page<ProductResponseDto> findAll(Integer page, Integer size, String sort, String name) {
@@ -65,12 +58,6 @@ public class ProductServiceImpl implements ProductService {
     var categoryTypeOpt = getCategory(dto.categoryId());
 
     var product = productRepository.save(ProductMapper.fromDtoToEntity(dto, categoryTypeOpt));
-
-    try {
-      productEventProducer.sendMessage(product, ProductEventType.PRODUCT_CREATED);
-    } catch (JsonProcessingException e) {
-      throw new ProductEventException("Erro ao processador o evento do produto" + e.getMessage());
-    }
 
     return ProductMapper.fromEntityToResponseDto(product);
   }

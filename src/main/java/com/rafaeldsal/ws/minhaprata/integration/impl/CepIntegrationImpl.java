@@ -30,11 +30,11 @@ public class CepIntegrationImpl implements CepIntegration {
   @Override
   public AddressViaCepDto findCep(AddressRequestDto dto) {
     try {
-      HttpEntity<AddressRequestDto> request = new HttpEntity<>(dto, this.headers);
+      String url = searchCepUrl + dto.postalCode() + "/json/";
       ResponseEntity<AddressViaCepDto> response = restTemplate.exchange(
-        searchCepUrl,
-        HttpMethod.POST,
-        request,
+        url,
+        HttpMethod.GET,
+        null,
         AddressViaCepDto.class);
       return response.getBody();
     } catch (Exception e) {

@@ -67,3 +67,4 @@ volumes:
   redis_data_container:
   zookeeper_data_container:
   kafka_data_container:
+  mongo_data_container:

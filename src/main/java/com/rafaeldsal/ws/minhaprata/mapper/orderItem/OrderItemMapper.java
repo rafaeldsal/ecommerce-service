@@ -1,6 +1,8 @@
 package com.rafaeldsal.ws.minhaprata.mapper.orderItem;
 
+import com.rafaeldsal.ws.minhaprata.dto.order.OrderResponseDto;
 import com.rafaeldsal.ws.minhaprata.dto.orderItem.OrderItemDto;
+import com.rafaeldsal.ws.minhaprata.dto.orderItem.OrderItemResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Order;
 import com.rafaeldsal.ws.minhaprata.model.jpa.OrderItem;
@@ -35,5 +37,15 @@ public class OrderItemMapper {
     existing.setProduct(product);
 
     return existing;
+  }
+
+  public static OrderItemResponseDto toResponseDto(OrderItem item) {
+    return OrderItemResponseDto.builder()
+        .id(item.getId())
+        .productName(item.getProduct().getName())
+        .priceAtPurchase(item.getPriceAtPurchase())
+        .productId(item.getProduct().getId())
+        .quantity(item.getQuantity())
+        .build();
   }
 }

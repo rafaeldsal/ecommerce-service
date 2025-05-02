@@ -3,8 +3,8 @@ package com.rafaeldsal.ws.minhaprata.exception.handler;
 import com.rafaeldsal.ws.minhaprata.dto.error.ErrorResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.BusinessException;
+import com.rafaeldsal.ws.minhaprata.exception.IntegrationException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
-import com.rafaeldsal.ws.minhaprata.exception.ProductEventException;
 import com.rafaeldsal.ws.minhaprata.exception.UnauthorizedException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -84,12 +84,12 @@ public class ResourceHandler {
         .build());
   }
 
-  @ExceptionHandler(ProductEventException.class)
-  public ResponseEntity<ErrorResponseDto> handlerProductEventException(ProductEventException b) {
-    return ResponseEntity.status(HttpStatus.CONFLICT).body(ErrorResponseDto.builder()
+  @ExceptionHandler(IntegrationException.class)
+  public ResponseEntity<ErrorResponseDto> handlerIntegrationException(IntegrationException b) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponseDto.builder()
         .message(b.getMessage())
-        .status(HttpStatus.CONFLICT)
-        .statusCode(HttpStatus.CONFLICT.value())
+        .status(b.getStatus())
+        .statusCode(b.getStatus().value())
         .build());
   }
 

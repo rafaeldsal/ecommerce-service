@@ -1,13 +1,16 @@
 package com.rafaeldsal.ws.minhaprata.mapper.order;
 
-import com.rafaeldsal.ws.minhaprata.dto.orderItem.OrderItemResponseDto;
+import com.rafaeldsal.ws.minhaprata.dto.order.OrderEventPaymentDto;
 import com.rafaeldsal.ws.minhaprata.dto.order.OrderResponseDto;
+import com.rafaeldsal.ws.minhaprata.dto.orderItem.OrderItemResponseDto;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Order;
 import com.rafaeldsal.ws.minhaprata.model.jpa.OrderItem;
 
 import java.util.List;
 
 public class OrderMapper {
+
+  private OrderMapper () { }
 
   public static OrderResponseDto entityToResponseDto(Order order) {
     return OrderResponseDto.builder()
@@ -18,6 +21,21 @@ public class OrderMapper {
         .totalPrice(order.getTotalPrice())
         .userId(order.getUser().getId())
         .itemResponseDto(mapOrderItems(order.getOrderItems()))
+        .build();
+  }
+
+  public static List<OrderResponseDto> entityListToResponseDtoList(List<Order> orders) {
+    return orders.stream()
+        .map(OrderMapper::entityToResponseDto)
+        .toList();
+  }
+
+  public static OrderEventPaymentDto toOrderEventDto(Order order) {
+    return OrderEventPaymentDto.builder()
+        .orderId(order.getId())
+        .userId(order.getUser().getId())
+        .orderItem(mapOrderItems(order.getOrderItems()))
+        .totalPrice(order.getTotalPrice())
         .build();
   }
 
@@ -34,12 +52,6 @@ public class OrderMapper {
             .priceAtPurchase(orderItem.getPriceAtPurchase())
             .quantity(orderItem.getQuantity())
             .build())
-        .toList();
-  }
-
-  public static List<OrderResponseDto> entityListToResponseDtoList(List<Order> orders) {
-    return orders.stream()
-        .map(OrderMapper::entityToResponseDto)
         .toList();
   }
 }

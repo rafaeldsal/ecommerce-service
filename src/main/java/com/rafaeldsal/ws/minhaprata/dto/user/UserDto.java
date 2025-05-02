@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public record UserDto(
     String id,
 
-    @NotBlank(message = "não poder ser nulo ou vazio")
+    @NotBlank(message = "não pode ser nulo ou vazio")
     @Size(min = 3, message = "valor mínimo igual a 3")
     String name,
 

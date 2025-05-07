@@ -1,4 +1,7 @@
 package com.rafaeldsal.ws.minhaprata.dto.user;
 
-public class UserBasicInfo {
+public record UserBasicInfo(
+    String email,
+    String name
+) {
 }

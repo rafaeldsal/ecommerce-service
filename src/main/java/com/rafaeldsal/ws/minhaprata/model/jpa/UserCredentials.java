@@ -31,11 +31,10 @@ public class UserCredentials implements UserDetails {
   @Column(name = "user_credentials_id", nullable = false, unique = true)
   private String id;
 
+  @Column(nullable = false, unique = true)
   private String username;
 
   private String password;
-
-  private String name;
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)

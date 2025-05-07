@@ -6,6 +6,7 @@ import com.rafaeldsal.ws.minhaprata.integration.MailIntegration;
 import com.rafaeldsal.ws.minhaprata.model.jpa.UserCredentials;
 import com.rafaeldsal.ws.minhaprata.model.redis.UserRecoveryCode;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.UserDetailsRepository;
+import com.rafaeldsal.ws.minhaprata.repository.jpa.UserRepository;
 import com.rafaeldsal.ws.minhaprata.repository.redis.UserRecoveryCodeRepository;
 import com.rafaeldsal.ws.minhaprata.service.CustomUserService;
 import com.rafaeldsal.ws.minhaprata.utils.PasswordUtils;
@@ -30,9 +31,8 @@ public class UserDetailsServiceImpl implements UserDetailsService, CustomUserSer
   private String recoveryCodeTimeout;
 
   private final UserDetailsRepository userDetailsRepository;
-
+  private final UserRepository userRepository;
   private final UserRecoveryCodeRepository userRecoveryCodeRepository;
-
   private final MailIntegration mailIntegration;
 
   @Override
@@ -64,7 +64,10 @@ public class UserDetailsServiceImpl implements UserDetailsService, CustomUserSer
 
     userRecoveryCodeRepository.save(userRecoveryCode);
 
-    mailIntegration.send(userRecoveryCodeRequest.getEmail(), messageRecoveryCode(userRecoveryCode.getName(), code), "Recuperação de conta - Minha Prata");
+    var user = userRepository.findByEmail(userRecoveryCodeRequest.getEmail())
+        .orElseThrow(() -> new NotFoundException("Usuário não encontrado"));
+
+    mailIntegration.send(userRecoveryCodeRequest.getEmail(), messageRecoveryCode(user.name(), code), "Recuperação de conta - Minha Prata");
 
   }
 
@@ -89,7 +92,9 @@ public class UserDetailsServiceImpl implements UserDetailsService, CustomUserSer
       userCredentials.setPassword(PasswordUtils.encode(dto.password()));
       userDetailsRepository.save(userCredentials);
 
-      mailIntegration.send(dto.email(), messagePasswordChangedSuccess(userCredentials.getName()), "Senha recuperada com sucesso!");
+      var user = userRepository.findByEmail(dto.email()).get();
+
+      mailIntegration.send(dto.email(), messagePasswordChangedSuccess(user.name()), "Senha recuperada com sucesso!");
     }
   }
 

@@ -15,10 +15,9 @@ public class UserCredentialsMapper {
 
     return UserCredentials.builder()
         .id(IdGenerator.UUIDGenerator("credentials"))
+        .role(dto.role() != null ? dto.role() : UserRole.USER)
         .username(dto.email())
         .password(encryptedPassword)
-        .name(dto.name())
-        .role(dto.role() != null ? dto.role() : UserRole.USER)
         .build();
   }
 }

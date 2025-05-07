@@ -12,18 +12,32 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 @Configuration
 @RequiredArgsConstructor
 public class KafkaProducerConfig {
 
-  @Value("${webservices.minhaprata.kafka.topic.payment-intent}")
+  @Value("${webservices.minhaprata.kafka.topic.payment-intent-request}")
   private String topicPaymentIntent;
 
-  @Value("${webservices.minhaprata.kafka.topic.product-created}")
-  private String topicProductCreated;
+  @Value("${webservices.minhaprata.kafka.topic.payment-intent-response}")
+  private String topicPaymentIntentResponse;
+
+  @Value("${webservices.minhaprata.kafka.topic.partitions}")
+  private Integer partitionsTopic;
+
+  @Value("${webservices.minhaprata.kafka.topic.replication-factor}")
+  private Integer replicas;
+
 
   private final KafkaProperties kafkaProperties;
+
+  @Bean
+  public Executor kafkaCallbackExecutor() {
+    return Executors.newFixedThreadPool(4);
+  }
 
   @Bean
   public ProducerFactory<String, String> producerFactory() {
@@ -40,13 +54,13 @@ public class KafkaProducerConfig {
   public KafkaAdmin.NewTopics createdTopics() {
     return new KafkaAdmin.NewTopics(
         TopicBuilder.name(topicPaymentIntent)
-            .partitions(1)
-            .replicas(1)
+            .partitions(partitionsTopic)
+            .replicas(replicas)
             .build(),
 
-        TopicBuilder.name(topicProductCreated)
-            .partitions(1)
-            .replicas(1)
+        TopicBuilder.name(topicPaymentIntentResponse)
+            .partitions(partitionsTopic)
+            .replicas(replicas)
             .build());
 
   }

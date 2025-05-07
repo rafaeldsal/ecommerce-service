@@ -24,23 +24,9 @@ CREATE TABLE IF NOT EXISTS `tbl_address` (
 
 CREATE TABLE IF NOT EXISTS `tbl_user_credentials` (
     `user_credentials_id` VARCHAR(100) NOT NULL PRIMARY KEY,
-    `username` CHAR(255) NOT NULL,
-    `name` CHAR(255) NOT NULL,
+    `username` CHAR(255) NOT NULL UNIQUE,
     `password` CHAR(255) NOT NULL,
-    `role` CHAR(255) NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS `tbl_user_payment_info` (
-    user_payment_info_id VARCHAR(255) NOT NULL PRIMARY KEY,
-    card_number VARCHAR(255) NOT NULL UNIQUE,
-    card_expiration_year VARCHAR(50) NOT NULL,
-    card_expiration_month VARCHAR(50) NOT NULL,
-    card_security_code VARCHAR(50) NOT NULL,
-    price DECIMAL(19,2) NOT NULL,
-    installments INT NOT NULL,
-    dt_payment DATETIME NOT NULL,
-    user_id VARCHAR(255),
-    save_payment_method BOOLEAN NOT NULL
+    `role` VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `tbl_order` (
@@ -49,8 +35,7 @@ CREATE TABLE IF NOT EXISTS `tbl_order` (
     `status` VARCHAR(255) NULL,
     `total_price` DECIMAL(15,2),
     `dt_updated` DATETIME NOT NULL,
-    `user_id` VARCHAR(100) NOT NULL,
-    `payment_id` VARCHAR(100) NULL
+    `user_id` VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `tbl_order_item` (
@@ -81,7 +66,16 @@ CREATE TABLE IF NOT EXISTS `tbl_category` (
 
 CREATE TABLE IF NOT EXISTS `tbl_payment` (
     `payment_id` VARCHAR(100) NOT NULL PRIMARY KEY,
-    `dt_payment` DATETIME NOT NULL,
+    `dt_created` DATETIME NOT NULL,
+    `dt_updated` DATETIME NOT NULL,
+    `transaction_id` VARCHAR(100),
+    `payment_intent_id` VARCHAR(100),
+    `client_secret` VARCHAR(250),
+    `failure_code` VARCHAR(250),
+    `failure_message` VARCHAR(250),
+    `decline_code` VARCHAR(250),
+    `failed_at` VARCHAR(250),
+    `status` VARCHAR(100),
     `payment_method` VARCHAR(90) NOT NULL,
     `save_payment_method` BOOLEAN,
     `currency` VARCHAR(20) NOT NULL,
@@ -108,9 +102,6 @@ ALTER TABLE `tbl_user` ADD UNIQUE `users_phone_unique`(`phone_number`);
 ALTER TABLE `tbl_product` ADD CONSTRAINT `unique_product_category` UNIQUE (`name`, `category_id`);
 
 -- FOREIGN KEYS
-ALTER TABLE `tbl_user_payment_info`
-    ADD CONSTRAINT `fk_user_payment_info_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user`(`user_id`);
-
 ALTER TABLE `tbl_order_history`
     ADD CONSTRAINT `fk_order_history_order` FOREIGN KEY (`order_id`) REFERENCES `tbl_order`(`order_id`) ON DELETE CASCADE;
 
@@ -137,6 +128,9 @@ ALTER TABLE `tbl_product`
 
 ALTER TABLE `tbl_payment`
     ADD CONSTRAINT `fk_payment_order` FOREIGN KEY (`order_id`) REFERENCES tbl_order(`order_id`) ON DELETE CASCADE;
+
+ALTER TABLE `tbl_payment`
+    ADD CONSTRAINT `uk_transaction_id` UNIQUE (`transaction_id`);
 
 
 -- Inserts para tbl_category

@@ -2,7 +2,7 @@ package com.rafaeldsal.ws.minhaprata.producer.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rafaeldsal.ws.minhaprata.dto.payment.PaymentCreatedEventDto;
+import com.rafaeldsal.ws.minhaprata.dto.payment.PaymentRecord;
 import com.rafaeldsal.ws.minhaprata.producer.PaymentEventProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +25,13 @@ public class PaymentEventProducerImpl implements PaymentEventProducer {
   private final ObjectMapper objectMapper;
 
   @Override
-  public void sendMessage(PaymentCreatedEventDto dto) {
+  public void sendMessage(PaymentRecord dto) {
     String content = null;
     try {
       content = objectMapper.writeValueAsString(dto);
     } catch (JsonProcessingException e) {
       log.error("Erro ao serializar mensagem para Kafka: {}", e.getMessage());
+      return;
     }
 
     CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send(topicPaymentCreated, content);

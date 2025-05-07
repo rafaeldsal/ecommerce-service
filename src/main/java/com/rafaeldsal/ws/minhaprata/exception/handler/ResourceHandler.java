@@ -4,6 +4,7 @@ import com.rafaeldsal.ws.minhaprata.dto.error.ErrorResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.BusinessException;
 import com.rafaeldsal.ws.minhaprata.exception.IntegrationException;
+import com.rafaeldsal.ws.minhaprata.exception.KafkaSubscribeException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.exception.UnauthorizedException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -87,6 +88,15 @@ public class ResourceHandler {
   @ExceptionHandler(IntegrationException.class)
   public ResponseEntity<ErrorResponseDto> handlerIntegrationException(IntegrationException b) {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponseDto.builder()
+        .message(b.getMessage())
+        .status(b.getStatus())
+        .statusCode(b.getStatus().value())
+        .build());
+  }
+
+  @ExceptionHandler(KafkaSubscribeException.class)
+  public ResponseEntity<ErrorResponseDto> handlerKafkaSubscribeException(KafkaSubscribeException b) {
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ErrorResponseDto.builder()
         .message(b.getMessage())
         .status(b.getStatus())
         .statusCode(b.getStatus().value())

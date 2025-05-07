@@ -5,6 +5,10 @@ public record AddressViaCepDto(
     String logradouro,
     String estado,
     String bairro,
-    String localidade
+    String localidade,
+    Boolean erro
 ) {
+  public Boolean erro() {
+    return erro != null ? erro : Boolean.FALSE;
+  }
 }

@@ -3,7 +3,6 @@ package com.rafaeldsal.ws.minhaprata.service.impl;
 import com.rafaeldsal.ws.minhaprata.dto.address.AddressRequestDto;
 import com.rafaeldsal.ws.minhaprata.dto.address.AddressResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
-import com.rafaeldsal.ws.minhaprata.exception.BusinessException;
 import com.rafaeldsal.ws.minhaprata.exception.IntegrationException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.integration.CepIntegration;
@@ -40,7 +39,9 @@ public class AddressServiceImpl implements AddressService {
 
     var cepValidByViaCep = cepIntegration.findCep(addressDto);
 
-    if (cepValidByViaCep == null) {
+    System.out.println(cepValidByViaCep == null );
+
+    if (cepValidByViaCep == null || Boolean.TRUE.equals(cepValidByViaCep.erro())) {
       throw new IntegrationException("CEP inválido ou não encontrado", HttpStatus.BAD_REQUEST);
     }
 
@@ -69,5 +70,4 @@ public class AddressServiceImpl implements AddressService {
 
     return AddressMapper.toResponseDto(address);
   }
-
 }

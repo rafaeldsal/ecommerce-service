@@ -1,9 +1,10 @@
 package com.rafaeldsal.ws.minhaprata.controller;
 
-import java.util.List;
-
+import com.rafaeldsal.ws.minhaprata.dto.category.CategoryDto;
+import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
+import com.rafaeldsal.ws.minhaprata.service.CategoryService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,16 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.rafaeldsal.ws.minhaprata.dto.category.CategoryDto;
-import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
-import com.rafaeldsal.ws.minhaprata.service.CategoryService;
+import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/category")
 public class CategoryController {
 
-  @Autowired
-  private CategoryService categoryService;
+  private final CategoryService categoryService;
 
   @GetMapping
   public ResponseEntity<List<Category>> readAll() {

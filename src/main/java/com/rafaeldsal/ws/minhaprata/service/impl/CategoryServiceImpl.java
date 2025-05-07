@@ -8,6 +8,8 @@ import com.rafaeldsal.ws.minhaprata.model.jpa.Category;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.CategoryRepository;
 import com.rafaeldsal.ws.minhaprata.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,16 +23,19 @@ public class CategoryServiceImpl implements CategoryService {
   private final CategoryRepository categoryRepository;
 
   @Override
+  @Cacheable(value = "categoryCacheAll")
   public List<Category> readAll() {
     return categoryRepository.findAll();
   }
 
   @Override
+  @Cacheable(value = "categoryCache", key = "#id")
   public Category findById(String id) {
     return getCategory(id);
   }
 
   @Override
+  @CacheEvict(value = { "categoryCache", "categoryCacheAll" }, allEntries = true)
   public Category create(CategoryDto category) {
 
     if (Objects.nonNull(category.id())) {
@@ -41,6 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   @Override
+  @CacheEvict(value = { "categoryCache", "categoryCacheAll" }, allEntries = true)
   public Category update(String id, CategoryDto category) {
     var categoryExisting = getCategory(id);
     CategoryMapper.updateEntityFromDto(category, categoryExisting);
@@ -48,6 +54,7 @@ public class CategoryServiceImpl implements CategoryService {
   }
 
   @Override
+  @CacheEvict(value = { "categoryCache", "categoryCacheAll" }, allEntries = true)
   public void delete(String id) {
     getCategory(id);
     categoryRepository.deleteById(id);

@@ -2,10 +2,9 @@ package com.rafaeldsal.ws.minhaprata.controller;
 
 import com.rafaeldsal.ws.minhaprata.dto.product.ProductRequestDto;
 import com.rafaeldsal.ws.minhaprata.dto.product.ProductResponseDto;
-import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
 import com.rafaeldsal.ws.minhaprata.service.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/product")
+@RequiredArgsConstructor
 public class ProductController {
 
-  @Autowired
-  private ProductService productService;
+  private final ProductService productService;
 
   @GetMapping
   public ResponseEntity<Page<ProductResponseDto>> findAll(@RequestParam(value = "page", defaultValue = "0") Integer page,

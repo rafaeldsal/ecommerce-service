@@ -15,7 +15,6 @@ import com.rafaeldsal.ws.minhaprata.model.jpa.OrderHistory;
 import com.rafaeldsal.ws.minhaprata.model.jpa.OrderItem;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
 import com.rafaeldsal.ws.minhaprata.model.redis.PendingOrder;
-import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderItemRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.ProductRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.UserRepository;
@@ -49,7 +48,6 @@ public class OrderServiceImpl implements OrderService {
 
   private final UserRepository userRepository;
   private final OrderRepository orderRepository;
-  private final OrderItemRepository orderItemRepository;
   private final ProductRepository productRepository;
   private final OrderItemMapper orderItemMapper;
   private final OrderHistoryService orderHistoryService;

@@ -7,7 +7,7 @@ import com.rafaeldsal.ws.minhaprata.model.redis.UserRecoveryCode;
 import com.rafaeldsal.ws.minhaprata.service.AuthenticationService;
 import com.rafaeldsal.ws.minhaprata.service.CustomUserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,14 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
+@RequiredArgsConstructor
 public class AuthenticationController {
 
-
-  @Autowired
-  private AuthenticationService authenticationService;
-
-  @Autowired
-  private CustomUserService customUserService;
+  private final AuthenticationService authenticationService;
+  private final CustomUserService customUserService;
 
   @PostMapping
   public ResponseEntity<TokenDto> auth(@RequestBody @Valid LoginDto dto) {

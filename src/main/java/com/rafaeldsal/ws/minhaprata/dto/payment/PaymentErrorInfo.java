@@ -1,4 +1,11 @@
 package com.rafaeldsal.ws.minhaprata.dto.payment;
 
-public record PaymentErrorInfo() {
+import lombok.Builder;
+
+@Builder
+public record PaymentErrorInfo(
+    String errorCode,
+    String errorMessage,
+    String stripeFailureCode
+) {
 }

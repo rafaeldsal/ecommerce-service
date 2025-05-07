@@ -30,15 +30,6 @@ public class OrderMapper {
         .toList();
   }
 
-  public static OrderEventPaymentDto toOrderEventDto(Order order) {
-    return OrderEventPaymentDto.builder()
-        .orderId(order.getId())
-        .userId(order.getUser().getId())
-        .orderItem(mapOrderItems(order.getOrderItems()))
-        .totalPrice(order.getTotalPrice())
-        .build();
-  }
-
   private static List<OrderItemResponseDto> mapOrderItems(List<OrderItem> orderItems) {
     if (orderItems.isEmpty()) {
       return List.of();

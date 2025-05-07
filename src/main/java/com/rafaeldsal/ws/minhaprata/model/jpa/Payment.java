@@ -1,7 +1,10 @@
 package com.rafaeldsal.ws.minhaprata.model.jpa;
 
+import com.rafaeldsal.ws.minhaprata.model.enums.PaymentStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -30,8 +33,11 @@ public class Payment implements Serializable {
   @Column(name = "payment_id", unique = true, nullable = false, updatable = false)
   private String id;
 
-  @Column(name = "dt_payment", nullable = false)
-  private LocalDateTime dtPayment;
+  @Column(name = "dt_created", nullable = false)
+  private LocalDateTime dtCreated;
+
+  @Column(name = "dt_updated", nullable = false)
+  private LocalDateTime dtUpdated;
 
   @Column(name = "payment_method", nullable = false)
   private String paymentMethod;
@@ -43,7 +49,31 @@ public class Payment implements Serializable {
   private BigDecimal amount;
 
   @Column(name = "save_payment_method")
-  private boolean savePaymentMethod;
+  private Boolean savePaymentMethod;
+
+  @Column(name = "transaction_id")
+  private String transactionId;
+
+  @Column(name = "payment_intent_id")
+  private String paymentIntentId;
+
+  @Column(name = "client_secret")
+  private String clientSecret;
+
+  @Enumerated(EnumType.STRING)
+  private PaymentStatus status;
+
+  @Column(name = "failure_code")
+  private String failureCode;
+
+  @Column(name = "failure_message")
+  private String failureMessage;
+
+  @Column(name = "decline_code")
+  private String declineCode;
+
+  @Column(name = "failed_at")
+  private LocalDateTime failedAt;
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "order_id", nullable = false)

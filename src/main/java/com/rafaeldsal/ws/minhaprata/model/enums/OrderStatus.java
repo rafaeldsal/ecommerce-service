@@ -2,13 +2,14 @@ package com.rafaeldsal.ws.minhaprata.model.enums;
 
 public enum OrderStatus {
   PENDING("pending"),
+  PENDING_PAYMENT("pending_payment"),
   PAID("paid"),
   IN_PROCESSING("in_processing"),
   SHIPPED("shipped"),
   DELIVERED("delivered"),
   CANCELLED("canceled"),
   EXPIRED("expired"),
-  PAYMENT_FAILURE("payment_failure");
+  FAILURE("failure");
 
   private String status;
 
@@ -24,5 +25,9 @@ public enum OrderStatus {
     }
 
     throw new IllegalArgumentException("Status inválido: " + str);
+  }
+
+  public boolean isFinalStatus() {
+    return this == CANCELLED || this == DELIVERED || this == FAILURE;
   }
 }

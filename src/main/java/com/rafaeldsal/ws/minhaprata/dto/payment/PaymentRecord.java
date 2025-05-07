@@ -2,10 +2,10 @@ package com.rafaeldsal.ws.minhaprata.dto.payment;
 
 import lombok.Builder;
 
-import java.math.BigDecimal;
-
 @Builder
-public record PaymentRequest(
+public record PaymentRecord(
+    String transactionId,
+    String timestamp,
     String userId,
     String orderId,
     String paymentMethod,

@@ -48,18 +48,12 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
   private final UserRepository userRepository;
-
   private final OrderRepository orderRepository;
-
   private final OrderItemRepository orderItemRepository;
-
   private final ProductRepository productRepository;
-
   private final OrderItemMapper orderItemMapper;
-
   private final OrderHistoryService orderHistoryService;
-
-  private final RedisTemplate redisTemplate;
+  private final RedisTemplate<String, Object> redisTemplate;
 
   @Override
   public OrderResponseDto findById(String orderId) {
@@ -139,6 +133,22 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   @Transactional
+  public void handleExpiredOrder(String orderId) {
+    Order order = orderRepository.findByIdWithOrderItems(orderId).orElseThrow(() -> new NotFoundException("Pedido não localizado"));
+
+    if (order.getStatus() != OrderStatus.PENDING) {
+      log.info("Pedido {} já processado com status {}", orderId, order.getStatus());
+      return;
+    }
+
+    expireOrder(order);
+
+    OrderHistory orderHistory = OrderHistoryMapper.toEntity(order, order.getUser(), "Pedido expirado automaticamente");
+    orderHistoryService.create(orderHistory);
+  }
+
+  @Override
+  @Transactional
   public OrderResponseDto update(OrderStatus orderStatus, String orderId) {
 
     Order order = orderRepository.findById(orderId)
@@ -155,70 +165,82 @@ public class OrderServiceImpl implements OrderService {
     order.setStatus(orderStatus);
     orderRepository.save(order);
 
-    List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
-
     if (OrderStatus.CANCELLED.equals(orderStatus)) {
-      updateStock(orderItems, false);
+      updateStockFromOrder(order, false, false);
     } else if (OrderStatus.PAID.equals(orderStatus)) {
-      updateStock(orderItems, true);
+      updateStockFromOrder(order, true, false);
     }
+
+    orderHistoryService.create(OrderHistoryMapper.toEntity(order, order.getUser(), "Atualizando pedido pela tela de ADM"));
 
     return OrderMapper.entityToResponseDto(order);
   }
 
   @Override
   @Transactional
-  public void expireOrder(String orderId) {
-    Order order = orderRepository.findByIdWithOrderItems(orderId).orElseThrow(() -> new NotFoundException("Pedido não localizado"));
-
-    if (order.getStatus() != OrderStatus.PENDING) {
-      log.info("Pedido {} já processado com status {}", orderId, order.getStatus());
-      return;
+  public void updateStatusFromWebhook(Order order, OrderStatus status) {
+    if ((OrderStatus.PAID.equals(order.getStatus()) ||
+        OrderStatus.DELIVERED.equals(order.getStatus())) &&
+        OrderStatus.CANCELLED.equals(status)) {
+      throw new BusinessException("Pedido não pode ser cancelado.");
     }
 
-    List<String> productsId = order.getOrderItems().stream()
-        .map(
-            orderItem -> orderItem.getProduct().getId())
-        .toList();
+    if (order.getStatus().equals(status)) {
+      throw new BusinessException("Pedido já se encontra nesse status " + order.getStatus());
+    }
 
-    Map<String, OrderItem> orderItemMap = order.getOrderItems().stream()
-        .collect(Collectors.toMap(
-            item -> item.getProduct().getId(),
-            item -> item)
-        );
+    order.setStatus(status);
+    order.setDtUpdated(DateTimeUtils.now());
+    orderRepository.save(order);
 
-    List<Product> products = productRepository.findAllByForUpdate(productsId);
+    orderHistoryService.create(OrderHistoryMapper.toEntity(order, order.getUser(), "Status alterado via webhook de pagamento"));
+  }
 
-    products.forEach(product -> {
+  private void expireOrder(Order order) {
+    updateStockFromOrder(order, true, true);
+    order.setStatus(OrderStatus.EXPIRED);
+    order.setDtUpdated(DateTimeUtils.now());
+    orderRepository.save(order);
+  }
+
+  private void updateStockFromOrder(Order order, boolean increment, boolean usePessimisticLock) {
+    List<OrderItem> orderItems = order.getOrderItems();
+    List<Product> products;
+
+    if (usePessimisticLock) {
+      List<String> productIds = orderItems.stream()
+          .map(item -> item.getProduct().getId())
+          .toList();
+
+      products = productRepository.findAllByForUpdate(productIds);
+    } else {
+      products = orderItems.stream()
+          .map(OrderItem::getProduct)
+          .toList();
+    }
+
+    Map<String, OrderItem> orderItemMap = orderItems.stream()
+        .collect(Collectors.toMap(item ->
+                item.getProduct().getId(),
+            item -> item));
+
+    for (Product product : products) {
       OrderItem orderItem = orderItemMap.get(product.getId());
       if (orderItem == null) {
         throw new IllegalStateException("Produto sem item correspondente");
       }
 
-      long quantity = orderItem.getQuantity();
+      long newStock = increment ?
+          product.getStockQuantity() + orderItem.getQuantity() :
+          product.getStockQuantity() - orderItem.getQuantity();
 
-      product.setStockQuantity(product.getStockQuantity() + quantity);
-    });
+      if (newStock < 0) {
+        throw new BusinessException("Estoque insuficiente para o produto: " + product.getId());
+      }
+
+      product.setStockQuantity(newStock);
+    }
 
     productRepository.saveAllAndFlush(products);
-
-    order.setStatus(OrderStatus.EXPIRED);
-    order.setDtUpdated(DateTimeUtils.now());
-    orderRepository.save(order);
-
-    OrderHistory orderHistory = OrderHistoryMapper.toEntity(order, order.getUser(), "Pedido expirado automaticamente");
-    orderHistoryService.create(orderHistory);
-  }
-
-  private void updateStock(List<OrderItem> items, boolean increment) {
-    List<Product> updatedProducts = new ArrayList<>();
-    for (OrderItem item : items) {
-      Product product = item.getProduct();
-      product.setStockQuantity(increment ?
-          product.getStockQuantity() + item.getQuantity()
-          : product.getStockQuantity() - item.getQuantity());
-      updatedProducts.add(product);
-    }
-    productRepository.saveAll(updatedProducts);
   }
 }

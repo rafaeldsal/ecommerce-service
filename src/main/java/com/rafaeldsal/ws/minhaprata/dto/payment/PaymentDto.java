@@ -1,7 +1,5 @@
 package com.rafaeldsal.ws.minhaprata.dto.payment;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -27,17 +25,5 @@ public record PaymentDto(
     @NotBlank(message = "não pode ser nulo ou vazio")
     String orderId,
 
-    boolean savePaymentMethod,
-
-    @Valid
-    CardDetailsDto cardDetailsDto
-) {
-    @AssertTrue(message = "Informações do cartão são obrigatórias para pagamentos com o cartão")
-    public boolean isCardDetailsValid() {
-        if ("card".equalsIgnoreCase(paymentMethod)) {
-            return cardDetailsDto != null;
-        } else {
-            return cardDetailsDto == null && !savePaymentMethod;
-        }
-    }
-}
+    boolean savePaymentMethod
+) {}

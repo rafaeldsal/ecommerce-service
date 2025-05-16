@@ -10,18 +10,22 @@ import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderHistoryRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.ProductRepository;
 import com.rafaeldsal.ws.minhaprata.repository.jpa.UserRepository;
+import com.rafaeldsal.ws.minhaprata.service.OrderService;
 import com.rafaeldsal.ws.minhaprata.utils.IdGenerator;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
 import org.springframework.data.redis.connection.DefaultMessage;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
 
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,81 +34,77 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RedisKeyExpirationListenerTest {
 
   @Mock
-  private OrderRepository orderRepository;
+  private OrderService orderService;
 
   @Mock
-  private OrderHistoryRepository orderHistoryRepository;
-
-  @Mock
-  private ProductRepository productRepository;
-
-  @Mock
-  private UserRepository userRepository;
-
-  @Mock
-  private RedisMessageListenerContainer listenerContainer;
+  private Logger mockLogger;
 
   @InjectMocks
   private RedisKeyExpirationListener listener;
 
+  @Mock
+  private RedisMessageListenerContainer listenerContainer;
+
+  private final byte[] PATTERN = "__keyevent@0__:expired".getBytes();
+
   @Test
   void testOnMessage_shouldExpireOrderAndRestoreStock() {
-    var userId = IdGenerator.UUIDGenerator("user");
-    var categoryId = IdGenerator.UUIDGenerator("cat");
     var orderId = IdGenerator.UUIDGenerator("order");
-    var orderItemId = IdGenerator.UUIDGenerator("orderItem");
-    var productId = IdGenerator.UUIDGenerator("prod");
 
-    Product product = Product.builder()
-        .id(productId)
-        .name("Produto exemplo")
-        .price(BigDecimal.valueOf(175.00))
-        .stockQuantity(100L)
-        .build();
-    OrderItem orderItem = OrderItem.builder()
-        .id(orderItemId)
-        .quantity(2)
-        .priceAtPurchase(BigDecimal.valueOf(175.00))
-        .product(product)
-        .build();
+    String expiredKey = "order:" + orderId;
 
-    User user = User.builder()
-        .id(userId)
-        .name("Rafael Souza")
-        .email("rafael@email.com")
-        .cpf("12345678900")
-        .phoneNumber("61999999999")
-        .dtBirth(LocalDate.of(2025, 4, 23))
-        .dtCreated(LocalDateTime.of(2025, 4, 23, 19, 50).plusDays(30))
-        .dtUpdated(LocalDateTime.of(2025, 4, 23, 19, 50).plusDays(30))
-        .role(UserRole.USER)
-        .build();
+    Message message = new DefaultMessage(PATTERN, expiredKey.getBytes());
 
-    Order order = Order.builder()
-        .id(IdGenerator.UUIDGenerator("order"))
-        .orderItems(List.of(orderItem))
-        .status(OrderStatus.PENDING)
-        .totalPrice(BigDecimal.valueOf(350.00))
-        .user(user)
-        .build();
+    listener.onMessage(message, PATTERN);
 
-    // Mockito.when(orderRepository.findById(orderId).thenReturn(order);
-    Mockito.when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+    verify(orderService).handleExpiredOrder(orderId);
+  }
 
-    String expiredKey = "order:123"; // A chave que expirou
-    Message message = new DefaultMessage(expiredKey.getBytes(), new byte[0]);
+  @Test
+  void testOnMessage_shouldIgnoreNonOrderKeys() {
+    String nonOrderKey = "user:123";
 
-    listener.onMessage(message, null);
+    Message message = new DefaultMessage(PATTERN, nonOrderKey.getBytes());
 
-    verify(orderRepository).save(argThat(order1 -> order1.getStatus() == OrderStatus.EXPIRED));
-    verify(productRepository).save(argThat(product1 -> product1.getStockQuantity() == 102L));  // 100 + 2 (quantidade no pedido)
-    verify(orderHistoryRepository).save(any());
+    listener.onMessage(message, PATTERN);
+
+    verify(orderService, never()).handleExpiredOrder(any());
+  }
+
+  @Test
+  void testOnMessage_shouldHandleNullMessage() {
+    listener.onMessage(null, PATTERN);
+
+    verify(orderService, never()).handleExpiredOrder(any());
+  }
+
+  @Test
+  void testOnMessage_shouldHandleNullBody() {
+    Message message = mock(Message.class);
+    when(message.getBody()).thenReturn(null);
+
+    listener.onMessage(message, PATTERN);
+
+    verify(orderService, never()).handleExpiredOrder(any());
+  }
+
+  @Test
+  void testOnMessage_shouldHandleServiceException() throws Exception {
+    String orderId = IdGenerator.UUIDGenerator("order");
+    String orderKey = "order:" + orderId;
+    Message message = new DefaultMessage(PATTERN, orderKey.getBytes());
+
+    doThrow(new RuntimeException("Service error")).when(orderService).handleExpiredOrder(orderId);
+
+    listener.onMessage(message, PATTERN);
+
+    verify(mockLogger).error(eq("Erro ao processar mensagem expirada no Redis: {}"), any(RuntimeException.class));
 
   }
 }

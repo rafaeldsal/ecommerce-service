@@ -2,7 +2,9 @@ package com.rafaeldsal.ws.minhaprata.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Builder;
 
+@Builder
 public record UserDetailsDto(
 
     @Email(message = "campo inválido")

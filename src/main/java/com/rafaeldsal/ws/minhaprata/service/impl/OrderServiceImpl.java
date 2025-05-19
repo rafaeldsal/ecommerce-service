@@ -122,9 +122,7 @@ public class OrderServiceImpl implements OrderService {
         .createdAt(DateTimeUtils.now()).build();
 
     redisTemplate.opsForValue().set("order:" + order.getId(), pendingOrder, Duration.ofSeconds(60));
-
-    OrderHistory orderHistory = OrderHistoryMapper.toEntity(order, user, "Pedido criado com sucesso");
-    orderHistoryService.create(orderHistory);
+    orderHistoryService.create(order, user, "Pedido criado com sucesso");
 
     return OrderMapper.entityToResponseDto(order);
   }
@@ -138,11 +136,8 @@ public class OrderServiceImpl implements OrderService {
       log.info("Pedido {} já processado com status {}", orderId, order.getStatus());
       return;
     }
-
     expireOrder(order);
-
-    OrderHistory orderHistory = OrderHistoryMapper.toEntity(order, order.getUser(), "Pedido expirado automaticamente");
-    orderHistoryService.create(orderHistory);
+    orderHistoryService.create(order, order.getUser(), "Pedido criado com sucesso");
   }
 
   @Override
@@ -168,8 +163,7 @@ public class OrderServiceImpl implements OrderService {
     } else if (OrderStatus.PAID.equals(orderStatus)) {
       updateStockFromOrder(order, true, false);
     }
-
-    orderHistoryService.create(OrderHistoryMapper.toEntity(order, order.getUser(), "Atualizando pedido pela tela de ADM"));
+    orderHistoryService.create(order, order.getUser(), "Atualizando pedido pela tela de ADM");
 
     return OrderMapper.entityToResponseDto(order);
   }
@@ -191,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
     order.setDtUpdated(DateTimeUtils.now());
     orderRepository.save(order);
 
-    orderHistoryService.create(OrderHistoryMapper.toEntity(order, order.getUser(), "Status alterado via webhook de pagamento"));
+    orderHistoryService.create(order, order.getUser(), "Pedido criado com sucesso");
   }
 
   private void expireOrder(Order order) {

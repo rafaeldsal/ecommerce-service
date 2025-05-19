@@ -2,7 +2,9 @@ package com.rafaeldsal.ws.minhaprata.dto.address;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 
+@Builder
 public record AddressRequestDto(
     String id,
 

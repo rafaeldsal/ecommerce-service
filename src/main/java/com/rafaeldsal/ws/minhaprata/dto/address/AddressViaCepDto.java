@@ -1,5 +1,8 @@
 package com.rafaeldsal.ws.minhaprata.dto.address;
 
+import lombok.Builder;
+
+@Builder
 public record AddressViaCepDto(
     String cep,
     String logradouro,

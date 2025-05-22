@@ -3,6 +3,7 @@ package com.rafaeldsal.ws.minhaprata.exception.handler;
 import com.rafaeldsal.ws.minhaprata.dto.error.ErrorResponseDto;
 import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.BusinessException;
+import com.rafaeldsal.ws.minhaprata.exception.HttpClientException;
 import com.rafaeldsal.ws.minhaprata.exception.IntegrationException;
 import com.rafaeldsal.ws.minhaprata.exception.KafkaSubscribeException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
@@ -100,6 +101,15 @@ public class ResourceHandler {
         .message(b.getMessage())
         .status(b.getStatus())
         .statusCode(b.getStatus().value())
+        .build());
+  }
+
+  @ExceptionHandler(HttpClientException.class)
+  public ResponseEntity<ErrorResponseDto> handlerHttpClientException(HttpClientException d) {
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResponseDto.builder()
+        .message(d.getMessage())
+        .status(d.getStatus())
+        .statusCode(d.getStatus().value())
         .build());
   }
 

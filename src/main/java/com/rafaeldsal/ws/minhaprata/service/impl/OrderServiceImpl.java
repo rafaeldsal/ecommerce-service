@@ -61,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
 
   @Override
   public Page<OrderResponseDto> findAll(int page, int size, String sort, String userId, OrderStatus status) {
-    Sort sortRequest = Sort.by(SortUtils.getSortDirection(sort));
+    Sort sortRequest = Sort.by(SortUtils.getSortDirection(sort), "dtOrder");
     Pageable pageable = PageRequest.of(page, size, sortRequest);
 
     Page<Order> orders;
@@ -137,7 +137,7 @@ public class OrderServiceImpl implements OrderService {
       return;
     }
     expireOrder(order);
-    orderHistoryService.create(order, order.getUser(), "Pedido criado com sucesso");
+    orderHistoryService.create(order, order.getUser(), "Pedido expirado por timeout de pagamento");
   }
 
   @Override
@@ -185,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
     order.setDtUpdated(DateTimeUtils.now());
     orderRepository.save(order);
 
-    orderHistoryService.create(order, order.getUser(), "Pedido criado com sucesso");
+    orderHistoryService.create(order, order.getUser(), "Pedido com status alterado para " + status + " via WebHook Stripe");
   }
 
   private void expireOrder(Order order) {

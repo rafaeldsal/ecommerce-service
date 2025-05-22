@@ -7,7 +7,6 @@ import com.rafaeldsal.ws.minhaprata.dto.payment.PaymentWebhookResponseDto;
 
 public interface PaymentService {
 
-
   PaymentInitResponseDto create(PaymentDto dto);
   void update(PaymentUpdateStatus dto);
   void updateStatusPaymentCompleted(PaymentWebhookResponseDto dto);

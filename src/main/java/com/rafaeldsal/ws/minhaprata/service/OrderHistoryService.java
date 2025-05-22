@@ -2,7 +2,6 @@ package com.rafaeldsal.ws.minhaprata.service;
 
 import com.rafaeldsal.ws.minhaprata.dto.orderHistory.OrderHistoryResponseDto;
 import com.rafaeldsal.ws.minhaprata.model.jpa.Order;
-import com.rafaeldsal.ws.minhaprata.model.jpa.OrderHistory;
 import com.rafaeldsal.ws.minhaprata.model.jpa.User;
 import org.springframework.data.domain.Page;
 

@@ -41,7 +41,6 @@ import static org.mockito.Mockito.when;
 class ProductServiceTest {
 
   private static final String PRODUCT_ID = IdGenerator.UUIDGenerator("prod");
-  private static final String USER_ID = IdGenerator.UUIDGenerator("user");
   private static final String CATEGORY_ID = IdGenerator.UUIDGenerator("cat");
   private static final PageRequest PAGE_REQUEST = PageRequest.of(0, 10, Sort.by(SortUtils.getSortDirection("ASC"), "name"));
 

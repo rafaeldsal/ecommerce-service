@@ -5,14 +5,12 @@ import com.rafaeldsal.ws.minhaprata.dto.address.AddressViaCepDto;
 import com.rafaeldsal.ws.minhaprata.exception.HttpClientException;
 import com.rafaeldsal.ws.minhaprata.integration.CepIntegration;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Base64;
 
 @Component
 public class CepIntegrationImpl implements CepIntegration {

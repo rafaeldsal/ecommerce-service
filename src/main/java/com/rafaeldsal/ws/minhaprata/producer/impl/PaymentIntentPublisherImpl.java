@@ -3,17 +3,18 @@ package com.rafaeldsal.ws.minhaprata.producer.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rafaeldsal.ws.minhaprata.dto.payment.PaymentRecord;
+import com.rafaeldsal.ws.minhaprata.exception.KafkaPublisherException;
 import com.rafaeldsal.ws.minhaprata.producer.PaymentIntentPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,9 +35,7 @@ public class PaymentIntentPublisherImpl implements PaymentIntentPublisher {
       content = objectMapper.writeValueAsString(dto);
     } catch (JsonProcessingException e) {
       log.error("Erro ao serializar mensagem para Kafka: {}", e.getMessage());
-
-      //KafkaPublishingException -> Vou criar depois
-      throw new RuntimeException("Falha ao serializar PaymentRequest", e);
+      throw new KafkaPublisherException("Falha ao serializar PaymentRequest - ERROR - " + e, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     String key = dto.transactionId();

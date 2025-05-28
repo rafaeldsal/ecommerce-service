@@ -5,6 +5,7 @@ import com.rafaeldsal.ws.minhaprata.exception.BadRequestException;
 import com.rafaeldsal.ws.minhaprata.exception.BusinessException;
 import com.rafaeldsal.ws.minhaprata.exception.HttpClientException;
 import com.rafaeldsal.ws.minhaprata.exception.IntegrationException;
+import com.rafaeldsal.ws.minhaprata.exception.KafkaPublisherException;
 import com.rafaeldsal.ws.minhaprata.exception.KafkaSubscribeException;
 import com.rafaeldsal.ws.minhaprata.exception.NotFoundException;
 import com.rafaeldsal.ws.minhaprata.exception.UnauthorizedException;
@@ -97,6 +98,15 @@ public class ResourceHandler {
 
   @ExceptionHandler(KafkaSubscribeException.class)
   public ResponseEntity<ErrorResponseDto> handlerKafkaSubscribeException(KafkaSubscribeException b) {
+    return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ErrorResponseDto.builder()
+        .message(b.getMessage())
+        .status(b.getStatus())
+        .statusCode(b.getStatus().value())
+        .build());
+  }
+
+  @ExceptionHandler(KafkaPublisherException.class)
+  public ResponseEntity<ErrorResponseDto> handlerKafkaPublisherException(KafkaPublisherException b) {
     return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(ErrorResponseDto.builder()
         .message(b.getMessage())
         .status(b.getStatus())

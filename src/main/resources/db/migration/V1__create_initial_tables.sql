@@ -114,9 +114,6 @@ ALTER TABLE `tbl_order_history`
 ALTER TABLE `tbl_order`
     ADD CONSTRAINT `fk_orders_user` FOREIGN KEY (`user_id`) REFERENCES `tbl_user`(`user_id`);
 
-ALTER TABLE `tbl_order`
-    ADD CONSTRAINT `fk_orders_payment` FOREIGN KEY (`payment_id`) REFERENCES `tbl_payment`(`payment_id`);
-
 ALTER TABLE `tbl_order_item`
     ADD CONSTRAINT `fk_order_item_order` FOREIGN KEY (`order_id`) REFERENCES `tbl_order`(`order_id`);
 

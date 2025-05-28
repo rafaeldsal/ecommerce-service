@@ -1,40 +1,26 @@
 package com.rafaeldsal.ws.minhaprata.listener;
 
-import com.rafaeldsal.ws.minhaprata.model.enums.OrderStatus;
-import com.rafaeldsal.ws.minhaprata.model.enums.UserRole;
-import com.rafaeldsal.ws.minhaprata.model.jpa.Order;
-import com.rafaeldsal.ws.minhaprata.model.jpa.OrderItem;
-import com.rafaeldsal.ws.minhaprata.model.jpa.Product;
-import com.rafaeldsal.ws.minhaprata.model.jpa.User;
-import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderHistoryRepository;
-import com.rafaeldsal.ws.minhaprata.repository.jpa.OrderRepository;
-import com.rafaeldsal.ws.minhaprata.repository.jpa.ProductRepository;
-import com.rafaeldsal.ws.minhaprata.repository.jpa.UserRepository;
 import com.rafaeldsal.ws.minhaprata.service.OrderService;
 import com.rafaeldsal.ws.minhaprata.utils.IdGenerator;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.springframework.data.redis.connection.DefaultMessage;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-
-
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class RedisKeyExpirationListenerTest {
@@ -52,6 +38,11 @@ class RedisKeyExpirationListenerTest {
   private RedisMessageListenerContainer listenerContainer;
 
   private final byte[] PATTERN = "__keyevent@0__:expired".getBytes();
+
+  @BeforeEach
+  void setUp() {
+    ReflectionTestUtils.setField(listener, "log", mockLogger);
+  }
 
   @Test
   void testOnMessage_shouldExpireOrderAndRestoreStock() {

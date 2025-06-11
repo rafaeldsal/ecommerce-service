@@ -6,6 +6,7 @@ import com.rafaeldsal.ws.minhaprata.service.CategoryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,22 +27,22 @@ public class CategoryController {
   private final CategoryService categoryService;
 
   @GetMapping
-  public ResponseEntity<List<Category>> readAll() {
+  public ResponseEntity<List<Category>> findAll() {
     return ResponseEntity.status(HttpStatus.OK).body(categoryService.readAll());
   }
 
-  @GetMapping("/{id}")
-  public ResponseEntity<Category> readAll(@PathVariable("id") String id) {
+  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Category> findById(@PathVariable("id") String id) {
     return ResponseEntity.status(HttpStatus.OK).body(categoryService.findById(id));
   }
 
-  @PostMapping
+  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<Category> create(@Valid @RequestBody CategoryDto dto) {
     return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(dto));
   }
 
-  @PutMapping("{id}")
-  public ResponseEntity<Category> update(@PathVariable("id") String id, @RequestBody CategoryDto dto) {
+  @PutMapping(value = "{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Category> update(@PathVariable("id") String id, @Valid @RequestBody CategoryDto dto) {
     return ResponseEntity.status(HttpStatus.OK).body(categoryService.update(id, dto));
   }
 

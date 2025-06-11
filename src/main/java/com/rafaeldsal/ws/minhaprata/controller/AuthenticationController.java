@@ -9,6 +9,7 @@ import com.rafaeldsal.ws.minhaprata.service.CustomUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,12 +27,12 @@ public class AuthenticationController {
   private final AuthenticationService authenticationService;
   private final CustomUserService customUserService;
 
-  @PostMapping
+  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<TokenDto> auth(@RequestBody @Valid LoginDto dto) {
     return ResponseEntity.status(HttpStatus.OK).body(authenticationService.auth(dto));
   }
 
-  @PostMapping("/recovery-code/send")
+  @PostMapping(value = "/recovery-code/send", produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<?> sendRecoveryCode(@RequestBody @Valid UserRecoveryCode userRecoveryCode) {
     customUserService.sendRecoveryCode(userRecoveryCode);
     return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

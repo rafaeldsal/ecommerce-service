@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -34,12 +35,12 @@ public class OrderController {
     return ResponseEntity.ok(orderResponseDtos);
   }
 
-  @PostMapping
+  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<OrderResponseDto> create(@Valid @RequestBody OrderDto dto) {
     return ResponseEntity.status(HttpStatus.CREATED).body(orderService.create(dto));
   }
 
-  @PatchMapping
+  @PatchMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<OrderResponseDto> update(@RequestParam("id") String orderId, @RequestParam("status")OrderStatus status) {
     return ResponseEntity.status(HttpStatus.OK).body(orderService.update(status, orderId));
   }

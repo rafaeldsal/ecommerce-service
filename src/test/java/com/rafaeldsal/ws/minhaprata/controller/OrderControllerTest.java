@@ -167,4 +167,17 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.id", Matchers.is(ORDER_ID)))
                 .andExpect(jsonPath("$.status", Matchers.is(OrderStatus.IN_PROCESSING.toString())));
     }
+
+    @Test
+    void given_update_when_orderDtoMissingValues_then_returnBadRequest() throws Exception {
+        OrderDto dto = OrderDto.builder().build();
+
+        mockMvc.perform(post("/orders")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", Matchers.is("[userId=não pode ser nulo]")))
+                .andExpect(jsonPath("$.status", Matchers.is("BAD_REQUEST")))
+                .andExpect(jsonPath("$.statusCode", Matchers.is(400)));
+    }
 }

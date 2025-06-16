@@ -46,7 +46,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class OrderControllerTest {
 
     private static final String USER_ID = IdGenerator.UUIDGenerator("user");
-    private static final String CATEGORY_ID = IdGenerator.UUIDGenerator("cat");
     private static final String PRODUCT_ID = IdGenerator.UUIDGenerator("prod");
     private static final String ORDER_ITEM_ID = IdGenerator.UUIDGenerator("orderItem");
     private static final String ORDER_ID = IdGenerator.UUIDGenerator("order");

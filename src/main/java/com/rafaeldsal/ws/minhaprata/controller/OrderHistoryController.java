@@ -3,7 +3,6 @@ package com.rafaeldsal.ws.minhaprata.controller;
 import com.rafaeldsal.ws.minhaprata.dto.orderHistory.OrderHistoryResponseDto;
 import com.rafaeldsal.ws.minhaprata.service.OrderHistoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

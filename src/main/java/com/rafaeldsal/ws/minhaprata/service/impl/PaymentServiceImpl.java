@@ -65,7 +65,7 @@ public class PaymentServiceImpl implements PaymentService {
     orderRepository.save(order);
     paymentRepository.save(payment);
 
-    log.info("Informações do paagamento '{}' atualizado com sucesso", payment.getId());
+    log.info("Informações do pagamento '{}' atualizado com sucesso", payment.getId());
   }
 
   @Override

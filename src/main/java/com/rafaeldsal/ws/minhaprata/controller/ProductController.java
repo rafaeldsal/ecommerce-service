@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,14 +43,14 @@ public class ProductController {
   }
 
 //  @PreAuthorize("hasRole('ADMIN')")
-  @PostMapping
+  @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<ProductResponseDto> create(@Valid @RequestBody ProductRequestDto product) {
     return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(product));
   }
 
   @PreAuthorize("hasRole('ADMIN')")
-  @PutMapping("{productId}")
-  public ResponseEntity<ProductResponseDto> update(@RequestBody ProductRequestDto product, @PathVariable("productId") String productId) {
+  @PutMapping(value = "{productId}",  produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<ProductResponseDto> update(@Valid @RequestBody ProductRequestDto product, @PathVariable("productId") String productId) {
     return ResponseEntity.status(HttpStatus.OK).body(productService.update(productId, product));
   }
 

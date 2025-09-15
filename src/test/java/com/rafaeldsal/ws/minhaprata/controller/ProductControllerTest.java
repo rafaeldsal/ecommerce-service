@@ -48,8 +48,6 @@ class ProductControllerTest {
 
     private static final String PRODUCT_ID = IdGenerator.UUIDGenerator("prod");
     private static final String CATEGORY_ID = IdGenerator.UUIDGenerator("cat");
-    private static final String ORDER_ID = IdGenerator.UUIDGenerator("order");
-    private static final String USER_ID = IdGenerator.UUIDGenerator("user");
     private static final LocalDateTime DATE_TIME = LocalDateTime.now();
 
     @Autowired
@@ -220,7 +218,6 @@ class ProductControllerTest {
         mockMvc.perform(post("/product")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(dto)))
-                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message", Matchers.is("[price=deve ser informado, name=não pode ser nulo ou vazio, description=não pode ser nulo ou vazio, categoryId=deve ser informado]")))
                 .andExpect(jsonPath("$.status", Matchers.is("BAD_REQUEST")))

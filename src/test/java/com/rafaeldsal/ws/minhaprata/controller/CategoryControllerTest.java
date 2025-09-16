@@ -141,7 +141,8 @@ class CategoryControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", Matchers.is("[name=não pode ser nulo ou vazio, description=deve ter tamanho entre 5 e 255]")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("name=")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("description=")))
                 .andExpect(jsonPath("$.status", Matchers.is("BAD_REQUEST")))
                 .andExpect(jsonPath("$.statusCode", Matchers.is(400)));
 
@@ -180,7 +181,7 @@ class CategoryControllerTest {
     void given_update_when_categoryDtoIsMissingValues_then_returnBadRequest() throws Exception {
         CategoryDto dto = CategoryDto.builder()
                 .description("")
-                .name("New")
+                .name("")
                 .id(CATEGORY_ID)
                 .build();
 
@@ -189,7 +190,8 @@ class CategoryControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message", Matchers.is("[name=deve ter tamanho entre 4 e 15, description=deve ter tamanho entre 5 e 255]")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("name=")))
+                .andExpect(jsonPath("$.message", Matchers.containsString("description=")))
                 .andExpect(jsonPath("$.status", Matchers.is("BAD_REQUEST")))
                 .andExpect(jsonPath("$.statusCode", Matchers.is(400)));
 

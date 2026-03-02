@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `tbl_user` (
 );
 
 CREATE TABLE IF NOT EXISTS `tbl_address` (
-    `address_id` VARCHAR(255) NOT NULL PRIMARY KEY,
+    `address_id` VARCHAR(100) NOT NULL PRIMARY KEY,
     `street` VARCHAR(255),
     `number` VARCHAR(100),
     `complement` VARCHAR(255),
@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `tbl_address` (
     `city` VARCHAR(255),
     `state` VARCHAR(255),
     `postal_code` VARCHAR(20),
-    `user_id` VARCHAR(255) NOT NULL UNIQUE
+    `user_id` VARCHAR(100) NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS `tbl_user_credentials` (
@@ -48,20 +48,36 @@ CREATE TABLE IF NOT EXISTS `tbl_order_item` (
 
 CREATE TABLE IF NOT EXISTS `tbl_product` (
     `product_id` VARCHAR(100) NOT NULL PRIMARY KEY,
+    `category_id` VARCHAR(100) NOT NULL,
     `name` VARCHAR(255) NOT NULL,
-    `description` VARCHAR(255) NOT NULL,
-    `price` DECIMAL(15,2) NOT NULL,
-    `stock_quantity` INT NOT NULL,
-    `img_url` VARCHAR(255) NULL,
+    `description` TEXT NOT NULL,
+    `price` DECIMAL(10,2) NOT NULL,
+    `stock_quantity` INTEGER DEFAULT 0,
+    `options` JSON,
+    `is_active` BOOLEAN DEFAULT TRUE,
     `dt_created` DATETIME NOT NULL,
-    `dt_updated` DATETIME NOT NULL,
-    `category_id` VARCHAR(100) NOT NULL
+    `dt_updated` DATETIME NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS `tbl_product_images` (
+    `image_id` VARCHAR(100) NOT NULL PRIMARY KEY,
+    `product_id` VARCHAR(100) NOT NULL,
+    `image_url` VARCHAR(500) NOT NULL,
+    `image_order` INT NOT NULL DEFAULT 0,
+    `is_primary` BOOLEAN DEFAULT FALSE,
+    `alt_text` VARCHAR(255) NULL,
+    `dt_created` DATETIME NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `tbl_category` (
     `category_id` VARCHAR(100) NOT NULL PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL,
-    `description` VARCHAR(255) NULL
+    `description` VARCHAR(255) NULL,
+    `slug` VARCHAR(100),
+    `icon` TEXT,
+    `is_active` BOOLEAN DEFAULT TRUE,
+    `dt_created` DATETIME NOT NULL,
+    `dt_updated` DATETIME NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS `tbl_payment` (
@@ -121,7 +137,7 @@ ALTER TABLE `tbl_order_item`
     ADD CONSTRAINT `fk_order_item_product` FOREIGN KEY (`product_id`) REFERENCES `tbl_product`(`product_id`);
 
 ALTER TABLE `tbl_product`
-    ADD CONSTRAINT `fk_products_category` FOREIGN KEY (`category_id`) REFERENCES `tbl_category`(`category_id`);
+    ADD CONSTRAINT `fk_products_category` FOREIGN KEY (`category_id`) REFERENCES `tbl_category`(`category_id`) ON DELETE RESTRICT;
 
 ALTER TABLE `tbl_payment`
     ADD CONSTRAINT `fk_payment_order` FOREIGN KEY (`order_id`) REFERENCES tbl_order(`order_id`) ON DELETE CASCADE;
@@ -129,13 +145,21 @@ ALTER TABLE `tbl_payment`
 ALTER TABLE `tbl_payment`
     ADD CONSTRAINT `uk_transaction_id` UNIQUE (`transaction_id`);
 
+ALTER TABLE `tbl_product_images`
+    ADD CONSTRAINT `fk_product_id` FOREIGN KEY (`product_id`) REFERENCES tbl_product(`product_id`);
+
+
+ALTER TABLE `tbl_user_credentials`
+    ADD CONSTRAINT `fk_user_credentials_user` FOREIGN KEY (`user_credentials_id`) REFERENCES `tbl_user`(`user_id`);
 
 -- Inserts para tbl_category
-INSERT INTO `tbl_category` (`category_id`, `name`, `description`) VALUES
-('1', 'Brincos', 'Peças delicadas para compor o visual'),
-('2', 'Colares', 'Colares sofisticados e modernos'),
-('3', 'Anéis', 'Anéis de prata com designs exclusivos'),
-('4', 'Braceletes', 'Braceletes elegantes para todas as ocasiões');
+INSERT INTO `tbl_category` (`category_id`, `name`, `description`, `slug`, `icon`, `is_active`, `dt_created`, `dt_updated`) VALUES
+(UUID(), 'Brincos', 'Brincos de prata finamente trabalhados, ideais para realçar o visual com elegância e leveza. Perfeitos para o dia a dia ou ocasiões especiais.', 'BRINCOS', NULL, TRUE, NOW(), NOW()),
+(UUID(), 'Colares', 'Colares de prata com design sofisticado, que combinam delicadeza e modernidade para complementar diferentes estilos e personalidades.', 'COLARES', NULL, TRUE, NOW(), NOW()),
+(UUID(), 'Anéis', 'Anéis de prata com acabamentos exclusivos e detalhes refinados. Cada peça traduz estilo e autenticidade em um toque de brilho sutil.', 'ANEIS', NULL, TRUE, NOW(), NOW()),
+(UUID(), 'Braceletes', 'Braceletes de prata elegantes e versáteis, que agregam personalidade ao visual e podem ser combinados com diferentes tipos de joias.', 'BRACELETES', NULL, TRUE, NOW(), NOW());
+
+
 
 ---- Inserts para tbl_user
 --INSERT INTO `tbl_user` (`user_id`, `name`, `email`, `cpf`, `phone_number`, `dt_birth`, `role`, `dt_created`, `dt_updated`) VALUES ('user-026ee4e9-515c-4938-9ba6-c421b3adfb0b', 'Anthony Gabriel Ramos', 'bcasa-grande@example.org', '30172489504', '+55 (031) 2025 9136', '1975-03-31', 'USER', '2025-04-27 09:41:18', '2025-04-27 09:41:18');
